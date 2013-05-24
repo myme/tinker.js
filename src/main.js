@@ -33,18 +33,35 @@
       this.outputEl = options.outputEl;
       this.summaryEl.onclick = this.clickSummary.bind(this);
       this.outputEl.onclick = this.clickOutput.bind(this);
+      this.hideLogs();
+      this.setLogs([]);
     };
 
     LogController.prototype.clickSummary = function (e) {
       e.preventDefault();
-      hideEl(this.summaryEl);
-      showEl(this.outputEl);
+      this.showLogs();
     };
 
     LogController.prototype.clickOutput = function (e) {
       e.preventDefault();
+      this.hideLogs();
+    };
+
+    LogController.prototype.hideAll = function () {
+      hideEl(this.summaryEl);
+      hideEl(this.outputEl);
+    };
+
+    LogController.prototype.showLogs = function () {
+      hideEl(this.summaryEl);
+      showEl(this.outputEl);
+      this.shouldShowLogs = true;
+    };
+
+    LogController.prototype.hideLogs = function () {
       hideEl(this.outputEl);
       showEl(this.summaryEl);
+      this.shouldShowLogs = false;
     };
 
     LogController.prototype.setLogs = function (logs) {
@@ -53,13 +70,15 @@
           logs.length +
           ' log messages';
         this.setOutput(logs);
-        showEl(this.summaryEl);
-        hideEl(this.outputEl);
+        if (this.shouldShowLogs) {
+          this.showLogs();
+        } else {
+          this.hideLogs();
+        }
       } else {
         this.summaryEl.innerHTML = '';
         this.setOutput([]);
-        hideEl(this.summaryEl);
-        hideEl(this.outputEl);
+        this.hideAll();
       }
     };
 
