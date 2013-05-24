@@ -12,6 +12,7 @@
     element.style.display = 'block';
   };
 
+
   // Output controller
   var OutputController = (function () {
     var OutputController = function (outputEl) {
@@ -24,6 +25,7 @@
 
     return OutputController;
   }());
+
 
   // Log controller
 
@@ -109,6 +111,7 @@
     return LogController;
   }());
 
+
   // JavaScript runner
 
   var JSRunner = (function () {
@@ -161,6 +164,7 @@
     return JSRunner;
   }());
 
+
   // Editor
 
   var Editor = (function () {
@@ -195,6 +199,9 @@
 
     return Editor;
   }());
+
+
+  // DOM Ready
 
   window.onload = function () {
     var outputController = new OutputController(document.getElementById('output'));
