@@ -72,7 +72,7 @@
 
   var handlers = {
     'default': function (value) {
-      output.innerHTML = "<pre><code>" + value + "<\/code><\/pre>";
+      dumpOutput(value);
     },
 
     'javascript': function (value) {
@@ -84,7 +84,7 @@
 
   var getHandler = function (editor) {
     var id = editor.getSession().getMode().$id;
-    var mode = id.split('/').pop();
+    var mode = id ? id.split('/').pop() : 'default';
     return handlers[mode] || handlers['default'];
   };
 
