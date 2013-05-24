@@ -51,7 +51,7 @@
     'default': function (value) {
       output.innerHTML = "<pre><code>" + value + "<\/code><\/pre>";
     },
-    
+
     'javascript': function (value) {
       var result = runJavaScript(value);
       if (result) {
