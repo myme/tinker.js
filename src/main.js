@@ -65,10 +65,13 @@
     };
 
     LogController.prototype.setLogs = function (logs) {
-      if (logs.length) {
+      var length = logs.length;
+
+      if (length) {
         this.summaryEl.innerHTML = '<i class="icon-plus-sign"></i> ' +
-          logs.length +
-          ' log messages';
+          length +
+          ' log ' +
+          (length === 1 ? 'message' : 'messages');
         this.setOutput(logs);
         if (this.shouldShowLogs) {
           this.showLogs();
