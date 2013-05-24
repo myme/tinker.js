@@ -89,7 +89,6 @@
   };
 
   window.onload = function () {
-    var output = document.getElementById('output');
     var editor = ace.edit('editor');
 
     editor.setKeyboardHandler(require('ace/keyboard/vim').handler);
