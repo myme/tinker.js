@@ -1,0 +1,19 @@
+{
+  "name": "edit",
+  "version": "0.0.0",
+  "description": "ERROR: No README.md file found!",
+  "main": "index.js",
+  "scripts": {
+    "prepublish": "bower install",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "",
+  "author": {
+    "name": "Martin Øinæs Myrseth",
+    "email": "myrseth@gmail.com"
+  },
+  "license": "BSD",
+  "devDependencies": {
+    "bower": "~0.9.2"
+  }
+}
