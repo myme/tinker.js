@@ -15,6 +15,7 @@ app.use(express.logger());
 app.use(compiless({ root: path.join(rootDir, 'src') }));
 app.use('/lib', express.static(path.join(rootDir, 'lib')));
 app.use('/src', express.static(path.join(rootDir, 'src')));
+app.use('/', express.static(path.join(rootDir, 'static')));
 
 app.get('/', function (req, res) {
   res.render('index', {});
