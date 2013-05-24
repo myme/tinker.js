@@ -77,7 +77,7 @@
 
     'javascript': function (value) {
       var result = runJavaScript(value);
-      dumpOutput(JSON.stringify(result.result));
+      dumpOutput(JSON.stringify(result.result, 0, 2));
       dumpLogs(result.logs);
     }
   };
