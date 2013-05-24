@@ -20,7 +20,11 @@
     };
 
     OutputController.prototype.setOutput = function (output) {
-      this.outputEl.innerHTML = "<pre><code>" + output  + "<\/code><\/pre>";
+      if (output !== null ) {
+        this.outputEl.innerHTML = "<pre><code>" + output  + "<\/code><\/pre>";
+      } else {
+        this.outputEl.innerHTML = '';
+      }
     };
 
     return OutputController;
@@ -156,7 +160,7 @@
       window.console = _console;
 
       return {
-        result: evaled,
+        value: evaled,
         logs: mockConsole.output
       };
     };
@@ -216,9 +220,14 @@
         outputController.setOutput(value);
       },
 
-      'javascript': function (value) {
-        var result = new JSRunner().run(value);
-        outputController.setOutput(JSON.stringify(result.result, 0, 2));
+      'javascript': function (javascript) {
+        var result = new JSRunner().run(javascript);
+        var value = result.value;
+        if (javascript.trim()) {
+          outputController.setOutput(JSON.stringify(value, 0, 2));
+        } else {
+          outputController.setOutput(null);
+        }
         logController.setLogs(result.logs);
       }
     };
