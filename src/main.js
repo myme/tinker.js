@@ -140,7 +140,10 @@
       return MockConsole;
     }());
 
-    var JSRunner = function () {};
+    var JSRunner = function (options) {
+      options = options || {};
+      this.debug = options.debug;
+    };
 
     JSRunner.prototype.evaluate = function (javascript) {
       return eval(javascript);
@@ -155,7 +158,9 @@
       try {
         evaled = this.evaluate(javascript);
       } catch (e) {
-        _console.error('EVAL ERROR:', e);
+        if (this.debug) {
+          _console.error('EVAL ERROR:', e);
+        }
       }
       window.console = _console;
 
