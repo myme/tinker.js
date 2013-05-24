@@ -6,7 +6,6 @@
     "tinker": "./bin/tinker.js"
   },
   "scripts": {
-    "prepublish": "bower install",
     "start": "nodemon -w bin bin/tinker.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -22,7 +21,7 @@
   },
   "dependencies": {
     "express": "~3.2.5",
-    "jade": "~0.30.0",
-    "express-compiless": "~0.1.5"
+    "express-compiless": "~0.1.5",
+    "jade": "~0.30.0"
   }
 }
