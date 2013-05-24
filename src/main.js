@@ -4,99 +4,207 @@
 
   'use strict';
 
-  var genLogger = function (severity) {
-    return function () {
-      var args = Array.prototype.slice.call(arguments);
-      this.output.push({
-        severity: severity,
-        message: args.join(' ')
+  var hideEl = function (element) {
+    element.style.display = 'none';
+  };
+
+  var showEl = function (element) {
+    element.style.display = 'block';
+  };
+
+  // Output controller
+  var OutputController = (function () {
+    var OutputController = function (outputEl) {
+      this.outputEl = outputEl;
+    };
+
+    OutputController.prototype.setOutput = function (output) {
+      this.outputEl.innerHTML = "<pre><code>" + output  + "<\/code><\/pre>";
+    };
+
+    return OutputController;
+  }());
+
+  // Log controller
+
+  var LogController = (function () {
+    var LogController = function (options) {
+      this.summaryEl = options.summaryEl;
+      this.outputEl = options.outputEl;
+      this.summaryEl.onclick = this.clickSummary.bind(this);
+      this.outputEl.onclick = this.clickOutput.bind(this);
+    };
+
+    LogController.prototype.clickSummary = function (e) {
+      e.preventDefault();
+      hideEl(this.summaryEl);
+      showEl(this.outputEl);
+    };
+
+    LogController.prototype.clickOutput = function (e) {
+      e.preventDefault();
+      hideEl(this.outputEl);
+      showEl(this.summaryEl);
+    };
+
+    LogController.prototype.setLogs = function (logs) {
+      if (logs.length) {
+        this.summaryEl.innerHTML = '<i class="icon-plus-sign"></i> ' +
+          logs.length +
+          ' log messages';
+        this.setOutput(logs);
+        showEl(this.summaryEl);
+        hideEl(this.outputEl);
+      } else {
+        this.summaryEl.innerHTML = '';
+        this.setOutput([]);
+        hideEl(this.summaryEl);
+        hideEl(this.outputEl);
+      }
+    };
+
+    LogController.prototype.setOutput = function (logs) {
+      var severityMap = {
+        'log': 'info',
+        'error': 'error'
+      };
+
+      var formatted = logs.map(function (each) {
+        return '<div class="alert alert-' +
+          severityMap[each.severity] +
+          '">' +
+          each.message +
+          '</div>';
       });
-    };
-  };
 
-  var MockConsole = function () {
-    this.output = [];
-  };
-  MockConsole.prototype.log   = genLogger('log');
-  MockConsole.prototype.error = genLogger('error');
-
-  var evaluate = function (javascript) {
-    return eval(javascript);
-  };
-
-  var runJavaScript = function (javascript) {
-    var mockConsole = new MockConsole();
-    var _console = window.console;
-    var evaled;
-
-    window.console = mockConsole;
-    try {
-      evaled = evaluate(javascript);
-    } catch (e) {
-    }
-    window.console = _console;
-
-    return {
-      result: evaled,
-      logs: mockConsole.output
-    };
-  };
-
-  var dumpOutput = function (output) {
-    var outputElement = document.getElementById('output');
-    outputElement.innerHTML = "<pre><code>" + output  + "<\/code><\/pre>";
-  };
-
-  var dumpLogs = function (logs) {
-    var logElement = document.getElementById('log-output');
-
-    var severityMap = {
-      'log': 'info',
-      'error': 'error'
+      if (formatted.length) {
+        this.outputEl.innerHTML = '<pre><code>' + formatted.join('') + '</code></pre>';
+      } else {
+        this.outputEl.innerHTML = '';
+      }
     };
 
-    var formatted = logs.map(function (each) {
-      return '<div class="alert alert-' +
-        severityMap[each.severity] +
-        '">' +
-        each.message +
-        '</div>';
-    });
+    return LogController;
+  }());
 
-    if (formatted.length) {
-      logElement.innerHTML = '<pre><code>' + formatted.join('') + '</code></pre>';
-    } else {
-      logElement.innerHTML = '';
-    }
-  };
+  // JavaScript runner
 
-  var handlers = {
-    'default': function (value) {
-      dumpOutput(value);
-    },
+  var JSRunner = (function () {
+    var MockConsole = (function () {
+      var genLogger = function (severity) {
+        return function () {
+          var args = Array.prototype.slice.call(arguments);
+          this.output.push({
+            severity: severity,
+            message: args.join(' ')
+          });
+        };
+      };
 
-    'javascript': function (value) {
-      var result = runJavaScript(value);
-      dumpOutput(JSON.stringify(result.result, 0, 2));
-      dumpLogs(result.logs);
-    }
-  };
+      var MockConsole = function () {
+        this.output = [];
+      };
 
-  var getHandler = function (editor) {
-    var id = editor.getSession().getMode().$id;
-    var mode = id ? id.split('/').pop() : 'default';
-    return handlers[mode] || handlers['default'];
-  };
+      MockConsole.prototype.log   = genLogger('log');
+      MockConsole.prototype.error = genLogger('error');
+
+      return MockConsole;
+    }());
+
+    var JSRunner = function () {};
+
+    JSRunner.prototype.evaluate = function (javascript) {
+      return eval(javascript);
+    };
+
+    JSRunner.prototype.run = function (javascript) {
+      var mockConsole = new MockConsole();
+      var _console = window.console;
+      var evaled;
+
+      window.console = mockConsole;
+      try {
+        evaled = this.evaluate(javascript);
+      } catch (e) {
+        _console.error('EVAL ERROR:', e);
+      }
+      window.console = _console;
+
+      return {
+        result: evaled,
+        logs: mockConsole.output
+      };
+    };
+
+    return JSRunner;
+  }());
+
+  // Editor
+
+  var Editor = (function () {
+    var Editor = function (options) {
+      var editor = this.editor = ace.edit(options.selector);
+
+      ['keyboardHandler', 'theme'].forEach(function (each) {
+        var option = options[each];
+        if (option) {
+          var fn = 'set' + each.substr(0, 1).toUpperCase() + each.substr(1);
+          editor[fn](option);
+        }
+      });
+
+      if (options.mode) {
+        editor.getSession().setMode(options.mode);
+      }
+    };
+
+    Editor.prototype.getMode = function () {
+      var id = this.editor.getSession().getMode().$id;
+      return id ? id.split('/').pop() : null;
+    };
+
+    Editor.prototype.getValue = function () {
+      return this.editor.session.getValue();
+    };
+
+    Editor.prototype.onchange = function (callback) {
+      this.editor.getSession().on('change', callback);
+    };
+
+    return Editor;
+  }());
 
   window.onload = function () {
-    var editor = ace.edit('editor');
+    var outputController = new OutputController(document.getElementById('output'));
 
-    editor.setKeyboardHandler(require('ace/keyboard/vim').handler);
-    editor.setTheme('ace/theme/twilight');
-    editor.getSession().setMode('ace/mode/javascript');
-    editor.getSession().on('change', function (e) {
-      var value = editor.session.getValue();
-      getHandler(editor)(value);
+    var logController = new LogController({
+      summaryEl: document.getElementById('log-summary'),
+      outputEl: document.getElementById('log-output')
+    });
+
+    var handlers = {
+      'default': function (value) {
+        outputController.setOutput(value);
+      },
+
+      'javascript': function (value) {
+        var result = new JSRunner().run(value);
+        outputController.setOutput(JSON.stringify(result.result, 0, 2));
+        logController.setLogs(result.logs);
+      }
+    };
+
+    var editor = new Editor({
+      selector: 'editor',
+      keyboardHandler: require('ace/keyboard/vim').handler,
+      theme: 'ace/theme/twilight',
+      mode: 'ace/mode/javascript'
+    });
+
+    editor.onchange(function (e) {
+      var mode = editor.getMode();
+      var handler = (mode && handlers[mode]) || handlers['default'];
+      handler(editor.getValue());
     });
   };
 
