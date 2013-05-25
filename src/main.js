@@ -243,6 +243,10 @@
       return this.editor.session.getValue();
     };
 
+    Editor.prototype.setValue = function (value) {
+      return this.editor.session.setValue(value);
+    };
+
     Editor.prototype.onchange = function (callback) {
       this.editor.getSession().on('change', callback);
     };
