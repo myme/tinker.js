@@ -16,6 +16,13 @@
     return document.getElementById(id);
   };
 
+  var clickHandler = function (callback, context) {
+    return function (e) {
+      e.preventDefault();
+      callback.call(context || null, e);
+    };
+  };
+
 
   // Output controller
   var OutputController = (function () {
@@ -40,21 +47,11 @@
   var LogController = (function () {
     var LogController = function (options) {
       this.summaryEl = options.summaryEl;
-      this.outputEl = options.outputEl;
-      this.summaryEl.onclick = this.clickSummary.bind(this);
-      this.outputEl.onclick = this.clickOutput.bind(this);
+      this.outputEl  = options.outputEl;
+      this.summaryEl.onclick = clickHandler(this.showLogs, this);
+      this.outputEl.onclick  = clickHandler(this.hideLogs, this);
       this.hideLogs();
       this.setLogs([]);
-    };
-
-    LogController.prototype.clickSummary = function (e) {
-      e.preventDefault();
-      this.showLogs();
-    };
-
-    LogController.prototype.clickOutput = function (e) {
-      e.preventDefault();
-      this.hideLogs();
     };
 
     LogController.prototype.hideAll = function () {
@@ -184,12 +181,11 @@
   var HelpController = (function () {
     var HelpController = function (helpEl) {
       this.helpEl = helpEl;
-      helpEl.onclick = function (e) {
-        e.preventDefault();
+      helpEl.onclick = clickHandler(function (e) {
         if (e.target === this.helpEl) {
           this.hide();
         }
-      }.bind(this);
+      }, this);
     };
 
     HelpController.prototype.hide = function () {
@@ -272,7 +268,7 @@
     };
 
     var help = new HelpController(getId('help'));
-    getId('help-button').onclick = help.show.bind(help);
+    getId('help-button').onclick = clickHandler(help.show, help);
 
     var editor = new Editor({
       selector: 'editor',
