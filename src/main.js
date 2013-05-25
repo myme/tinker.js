@@ -179,6 +179,26 @@
   }());
 
 
+  // Help controller
+
+  var HelpController = (function () {
+    var HelpController = function (helpEl) {
+      helpEl.onclick = this.click.bind(this);
+    };
+
+    HelpController.prototype.click = function (e) {
+      e.preventDefault();
+      this.showHelp();
+    };
+
+    HelpController.prototype.showHelp = function () {
+      alert('Help is not implemented');
+    };
+
+    return HelpController;
+  }());
+
+
   // Editor
 
   var Editor = (function () {
@@ -245,6 +265,8 @@
         logController.setLogs(result.logs);
       }
     };
+
+    var help = new HelpController(getId('help'));
 
     var editor = new Editor({
       selector: 'editor',
