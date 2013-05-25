@@ -12,15 +12,6 @@
     element.style.display = 'block';
   };
 
-  var getEl = function (selector) {
-    switch (selector.substr(0, 1)) {
-      case '#':
-        return document.getElementById(selector.substr(1));
-      default:
-        return document.getElementsByTagName(selector);
-    }
-  };
-
   var clickHandler = function (callback, context) {
     return function (e) {
       e.preventDefault();
@@ -315,18 +306,18 @@
   exports.start = function () {
     this.render();
 
-    var outputController = new OutputController(getEl('#output'));
+    var outputController = new OutputController(this.outputEl);
 
     var logController = new LogController({
-      summaryEl: getEl('#log-summary'),
-      outputEl: getEl('#log-output')
+      summaryEl: this.logSummaryEl,
+      outputEl: this.logOutputEl
     });
 
-    var help = new ModalController(getEl('#help'));
-    getEl('#help-button').onclick = clickHandler(help.show, help);
+    var help = new ModalController(this.helpEl);
+    this.helpBtnEl.onclick = clickHandler(help.show, help);
 
-    var settings = new ModalController(getEl('#settings'));
-    getEl('#settings-button').onclick = clickHandler(settings.show, settings);
+    var settings = new ModalController(this.settingsEl);
+    this.settingsBtnEl.onclick = clickHandler(settings.show, settings);
 
     var editor = new Editor({
       selector: 'editor-container',
@@ -334,7 +325,7 @@
       mode: 'ace/mode/javascript'
     });
 
-    var theme = new ThemeController(getEl('head')[0], editor)
+    var theme = new ThemeController(document.head, editor)
       .addTheme('default', {
         editor: null,
         css: 'default-theme'
@@ -376,16 +367,16 @@
   exports.render = function () {
     el(document.body, [
       el('#editor.panel', el('#editor-container')),
-      el('#output.panel'),
-      el('#log-output'),
-      el('button#log-summary.btn-link'),
+      this.outputEl     = el('#output.panel'),
+      this.logOutputEl  = el('#log-output'),
+      this.logSummaryEl = el('button#log-summary.btn-link'),
 
       el('#buttons', [
-        el('button#help-button.btn-link', el('i.icon-question-sign.icon-2x')),
-        el('button#settings-button.btn-link', el('i.icon-cogs.icon-2x'))
+        this.helpBtnEl     = el('button#help-button.btn-link', el('i.icon-question-sign.icon-2x')),
+        this.settingsBtnEl = el('button#settings-button.btn-link', el('i.icon-cogs.icon-2x'))
       ]),
 
-      el('#help.tinker-modal.hide', el('.well', [
+      this.helpEl = el('#help.tinker-modal.hide', el('.well', [
         el('h1', 'Tinker Help'),
         el('p', "So, looking for some help, huh? Not much to see here yet I'm afraid."),
         el('p', "Close this modal by clicking outside of its bounds."),
@@ -400,7 +391,7 @@
         el('p', 'Not documented')
       ])),
 
-      el('#settings.tinker-modal.hide', el('.well', [
+      this.settingsEl = el('#settings.tinker-modal.hide', el('.well', [
         el('h1', 'Tinker Settings'),
         el('p', "So, looking for some settings, huh? Not much to see here yet I'm afraid."),
         el('p', 'Close this modal by clicking outside of its bounds.'),
