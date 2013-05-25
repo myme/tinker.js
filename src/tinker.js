@@ -261,19 +261,7 @@
 
   var Editor = (function () {
     var Editor = function (options) {
-      var editor = this.editor = ace.edit(options.selector);
-
-      ['keyboardHandler'].forEach(function (each) {
-        var option = options[each];
-        if (option) {
-          var fn = 'set' + each.substr(0, 1).toUpperCase() + each.substr(1);
-          editor[fn](option);
-        }
-      });
-
-      if (options.mode) {
-        editor.getSession().setMode(options.mode);
-      }
+      this.options = options || {};
     };
 
     Editor.prototype.getMode = function () {
@@ -293,8 +281,28 @@
       this.editor.setTheme(theme);
     };
 
+    Editor.prototype.start = function () {
+      var options = this.options;
+      var editor = this.editor = ace.edit(options.selector);
+
+      ['keyboardHandler'].forEach(function (each) {
+        var option = options[each];
+        if (option) {
+          var fn = 'set' + each.substr(0, 1).toUpperCase() + each.substr(1);
+          editor[fn](option);
+        }
+      });
+
+      if (options.mode) {
+        editor.getSession().setMode(options.mode);
+      }
+
+      return this;
+    };
+
     Editor.prototype.onchange = function (callback) {
       this.editor.getSession().on('change', callback);
+      return this;
     };
 
     return Editor;
@@ -306,6 +314,22 @@
   exporter(function () {
     var Tinker = function (options) {
       this.options = options || {};
+
+      this.editor = new Editor({
+        selector: 'editor-container',
+        keyboardHandler: require('ace/keyboard/vim').handler,
+        mode: 'ace/mode/javascript'
+      });
+
+      this.themeController = new ThemeController(document.head, this.editor)
+        .addTheme('default', {
+          editor: null,
+          css: 'default-theme'
+        })
+        .addTheme('twilight', {
+          editor: 'ace/theme/twilight',
+          css: 'twilight-theme'
+        });
     };
 
     Tinker.prototype.start = function () {
@@ -323,23 +347,6 @@
 
       var settings = new ModalController(this.settingsEl);
       this.settingsBtnEl.onclick = clickHandler(settings.show, settings);
-
-      var editor = new Editor({
-        selector: 'editor-container',
-        keyboardHandler: require('ace/keyboard/vim').handler,
-        mode: 'ace/mode/javascript'
-      });
-
-      var theme = new ThemeController(document.head, editor)
-        .addTheme('default', {
-          editor: null,
-          css: 'default-theme'
-        })
-        .addTheme('twilight', {
-          editor: 'ace/theme/twilight',
-          css: 'twilight-theme'
-        })
-        .setTheme(this.options.theme || 'default');
 
       var handlers = {
         'default': function (value) {
@@ -362,11 +369,15 @@
         }
       };
 
-      editor.onchange(function (e) {
-        var mode = editor.getMode();
-        var handler = (mode && handlers[mode]) || handlers['default'];
-        handler(editor.getValue());
-      });
+      var editor = this.editor
+        .start()
+        .onchange(function (e) {
+          var mode = editor.getMode();
+          var handler = (mode && handlers[mode]) || handlers['default'];
+          handler(editor.getValue());
+        });
+
+      this.themeController.setTheme(this.options.theme || 'default');
     };
 
     Tinker.prototype.render = function () {
