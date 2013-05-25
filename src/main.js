@@ -12,8 +12,13 @@
     element.style.display = 'block';
   };
 
-  var getId = function (id) {
-    return document.getElementById(id);
+  var getEl = function (selector) {
+    switch (selector.substr(0, 1)) {
+      case '#':
+        return document.getElementById(selector.substr(1));
+      default:
+        return document.getElementsByTagName(selector);
+    }
   };
 
   var clickHandler = function (callback, context) {
@@ -258,11 +263,11 @@
   // DOM Ready
 
   window.onload = function () {
-    var outputController = new OutputController(getId('output'));
+    var outputController = new OutputController(getEl('#output'));
 
     var logController = new LogController({
-      summaryEl: getId('log-summary'),
-      outputEl: getId('log-output')
+      summaryEl: getEl('#log-summary'),
+      outputEl: getEl('#log-output')
     });
 
     var handlers = {
@@ -286,11 +291,11 @@
       }
     };
 
-    var help = new ModalController(getId('help'));
-    getId('help-button').onclick = clickHandler(help.show, help);
+    var help = new ModalController(getEl('#help'));
+    getEl('#help-button').onclick = clickHandler(help.show, help);
 
-    var settings = new ModalController(getId('settings'));
-    getId('settings-button').onclick = clickHandler(settings.show, settings);
+    var settings = new ModalController(getEl('#settings'));
+    getEl('#settings-button').onclick = clickHandler(settings.show, settings);
 
     var editor = new Editor({
       selector: 'editor-container',
