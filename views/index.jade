@@ -11,12 +11,25 @@ html(lang="en")
     #output
     #log-output
     button#log-summary.btn-link
-    a#help-button(href='#'): i.icon-question-sign.icon-2x
-    #help.hide
+
+    #buttons
+      a#help-button(href='#'): i.icon-question-sign.icon-2x
+      a#settings-button(href='#'): i.icon-cogs.icon-2x
+
+    #help.tinker-modal.hide
       .well
         h3 Tinker Help
         p
           | So, looking for some help, huh?
+          | Not much to see here yet I'm afraid.
+        p
+          | Close this modal by clicking outside of its bounds.
+
+    #settings.tinker-modal.hide
+      .well
+        h3 Tinker Settings
+        p
+          | So, looking for some settings, huh?
           | Not much to see here yet I'm afraid.
         p
           | Close this modal by clicking outside of its bounds.

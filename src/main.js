@@ -23,6 +23,21 @@
     };
   };
 
+  var addClass = function (el, className) {
+    var classes = el.className.split(/\s+/).filter(function (e) {
+      return e !== className;
+    });
+    classes.push(className);
+    el.className = classes.join(' ');
+  };
+
+  var removeClass = function (el, className) {
+    var classes = el.className.split(/\s+/).filter(function (e) {
+      return e !== className;
+    });
+    el.className = classes.join(' ');
+  };
+
 
   // Output controller
   var OutputController = (function () {
@@ -176,27 +191,27 @@
   }());
 
 
-  // Help controller
+  // Modal controller
 
-  var HelpController = (function () {
-    var HelpController = function (helpEl) {
-      this.helpEl = helpEl;
-      helpEl.onclick = clickHandler(function (e) {
-        if (e.target === this.helpEl) {
+  var ModalController = (function () {
+    var ModalController = function (modalEl) {
+      this.modalEl = modalEl;
+      modalEl.onclick = clickHandler(function (e) {
+        if (e.target === this.modalEl) {
           this.hide();
         }
       }, this);
     };
 
-    HelpController.prototype.hide = function () {
-      this.helpEl.className = 'hide';
+    ModalController.prototype.hide = function () {
+      addClass(this.modalEl, 'hide');
     };
 
-    HelpController.prototype.show = function () {
-      this.helpEl.className = '';
+    ModalController.prototype.show = function () {
+      removeClass(this.modalEl, 'hide');
     };
 
-    return HelpController;
+    return ModalController;
   }());
 
 
@@ -267,8 +282,11 @@
       }
     };
 
-    var help = new HelpController(getId('help'));
+    var help = new ModalController(getId('help'));
     getId('help-button').onclick = clickHandler(help.show, help);
+
+    var settings = new ModalController(getId('settings'));
+    getId('settings-button').onclick = clickHandler(settings.show, settings);
 
     var editor = new Editor({
       selector: 'editor',
