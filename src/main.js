@@ -293,7 +293,7 @@
     getId('settings-button').onclick = clickHandler(settings.show, settings);
 
     var editor = new Editor({
-      selector: 'editor',
+      selector: 'editor-container',
       keyboardHandler: require('ace/keyboard/vim').handler,
       theme: 'ace/theme/twilight',
       mode: 'ace/mode/javascript'
