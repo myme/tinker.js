@@ -12,6 +12,10 @@
     element.style.display = 'block';
   };
 
+  var getId = function (id) {
+    return document.getElementById(id);
+  };
+
 
   // Output controller
   var OutputController = (function () {
@@ -214,11 +218,11 @@
   // DOM Ready
 
   window.onload = function () {
-    var outputController = new OutputController(document.getElementById('output'));
+    var outputController = new OutputController(getId('output'));
 
     var logController = new LogController({
-      summaryEl: document.getElementById('log-summary'),
-      outputEl: document.getElementById('log-output')
+      summaryEl: getId('log-summary'),
+      outputEl: getId('log-output')
     });
 
     var handlers = {
