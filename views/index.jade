@@ -10,4 +10,6 @@ html(lang="en")
     script(src="/lib/elv.min.js",type="text/javascript",charset="utf-8")
     script(src="/src/tinker.js",type="text/javascript",charset="utf-8")
     script(type="text/javascript",charset="utf-8")
-      window.onload = Tinker.start.bind(Tinker);
+      window.onload = Tinker.start.bind(Tinker, {
+        theme: 'default'
+      });

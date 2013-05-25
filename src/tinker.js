@@ -303,7 +303,9 @@
 
   // Tinker
 
-  exports.start = function () {
+  exports.start = function (options) {
+    options = options || {};
+
     this.render();
 
     var outputController = new OutputController(this.outputEl);
@@ -334,7 +336,7 @@
         editor: 'ace/theme/twilight',
         css: 'twilight-theme'
       })
-      .setTheme('default');
+      .setTheme(options.theme || 'default');
 
     var handlers = {
       'default': function (value) {
