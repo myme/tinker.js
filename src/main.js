@@ -320,27 +320,6 @@
       outputEl: getEl('#log-output')
     });
 
-    var handlers = {
-      'default': function (value) {
-        outputController.setOutput(value);
-      },
-
-      'javascript': function (javascript) {
-        var frame = document.createElement('iframe');
-        var result = new JSRunner({
-          'window': frame.contentWindow
-        }).run(javascript);
-        var value = result.value;
-
-        if (javascript.trim()) {
-          outputController.setOutput(JSON.stringify(value, 0, 2));
-        } else {
-          outputController.setOutput(null);
-        }
-        logController.setLogs(result.logs);
-      }
-    };
-
     var help = new ModalController(getEl('#help'));
     getEl('#help-button').onclick = clickHandler(help.show, help);
 
@@ -363,6 +342,27 @@
         css: 'twilight-theme'
       })
       .setTheme('default');
+
+    var handlers = {
+      'default': function (value) {
+        outputController.setOutput(value);
+      },
+
+      'javascript': function (javascript) {
+        var frame = document.createElement('iframe');
+        var result = new JSRunner({
+          'window': frame.contentWindow
+        }).run(javascript);
+        var value = result.value;
+
+        if (javascript.trim()) {
+          outputController.setOutput(JSON.stringify(value, 0, 2));
+        } else {
+          outputController.setOutput(null);
+        }
+        logController.setLogs(result.logs);
+      }
+    };
 
     editor.onchange(function (e) {
       var mode = editor.getMode();
