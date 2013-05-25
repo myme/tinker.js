@@ -193,11 +193,11 @@
     };
 
     HelpController.prototype.hide = function () {
-      this.helpEl.style.display = 'none';
+      this.helpEl.className = 'hide';
     };
 
     HelpController.prototype.show = function () {
-      this.helpEl.style.display = 'block';
+      this.helpEl.className = '';
     };
 
     return HelpController;
