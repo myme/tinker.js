@@ -389,12 +389,33 @@
         });
     };
 
+    Tinker.prototype.handlers = {
+      'default': function (value) {
+        this.outputController.setOutput(value);
+      },
+
+      'javascript': function (javascript) {
+        var frame = document.createElement('iframe');
+        var result = new JSRunner({
+          'window': frame.contentWindow
+        }).run(javascript);
+        var value = result.value;
+
+        if (javascript.trim()) {
+          this.outputController.setOutput(JSON.stringify(value, 0, 2));
+        } else {
+          this.outputController.setOutput(null);
+        }
+        this.logController.setLogs(result.logs);
+      }
+    };
+
     Tinker.prototype.start = function () {
       this.render();
 
-      var outputController = new OutputController(this.outputEl);
+      this.outputController = new OutputController(this.outputEl);
 
-      var logController = new LogController({
+      this.logController = new LogController({
         summaryEl: this.logSummaryEl,
         outputEl: this.logOutputEl
       });
@@ -405,34 +426,14 @@
       var settings = new ModalController(this.settingsEl);
       this.settingsBtnEl.onclick = clickHandler(settings.show, settings);
 
-      var handlers = {
-        'default': function (value) {
-          outputController.setOutput(value);
-        },
-
-        'javascript': function (javascript) {
-          var frame = document.createElement('iframe');
-          var result = new JSRunner({
-            'window': frame.contentWindow
-          }).run(javascript);
-          var value = result.value;
-
-          if (javascript.trim()) {
-            outputController.setOutput(JSON.stringify(value, 0, 2));
-          } else {
-            outputController.setOutput(null);
-          }
-          logController.setLogs(result.logs);
-        }
-      };
-
+      var handlers = this.handlers;
       var editor = this.editor
         .start()
         .onchange(function (e) {
           var mode = editor.getMode();
           var handler = (mode && handlers[mode]) || handlers['default'];
-          handler(editor.getValue());
-        });
+          handler.call(this, editor.getValue());
+        }.bind(this));
 
       this.themeController.setTheme(this.options.theme || 'default');
     };
