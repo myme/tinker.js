@@ -354,15 +354,15 @@
     });
 
     var theme = new ThemeController(getEl('head')[0], editor)
-      .addTheme('light', {
+      .addTheme('default', {
         editor: null,
-        css: 'light-theme'
+        css: 'default-theme'
       })
       .addTheme('twilight', {
         editor: 'ace/theme/twilight',
         css: 'twilight-theme'
       })
-      .setTheme('light');
+      .setTheme('default');
 
     editor.onchange(function (e) {
       var mode = editor.getMode();
