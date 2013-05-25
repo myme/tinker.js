@@ -1,6 +1,6 @@
 /* jshint evil:true */
 
-(function () {
+(function (exports, el) {
 
   'use strict';
 
@@ -310,9 +310,11 @@
   }());
 
 
-  // DOM Ready
+  // Tinker
 
-  window.onload = function () {
+  exports.start = function () {
+    this.render();
+
     var outputController = new OutputController(getEl('#output'));
 
     var logController = new LogController({
@@ -371,4 +373,51 @@
     });
   };
 
-}());
+  exports.render = function () {
+    el(document.body, [
+      el('#editor.panel', el('#editor-container')),
+      el('#output.panel'),
+      el('#log-output'),
+      el('button#log-summary.btn-link'),
+
+      el('#buttons', [
+        el('button#help-button.btn-link', el('i.icon-question-sign.icon-2x')),
+        el('button#settings-button.btn-link', el('i.icon-cogs.icon-2x'))
+      ]),
+
+      el('#help.tinker-modal.hide', el('.well', [
+        el('h1', 'Tinker Help'),
+        el('p', "So, looking for some help, huh? Not much to see here yet I'm afraid."),
+        el('p', "Close this modal by clicking outside of its bounds."),
+
+        el('h3', 'About'),
+        el('p', 'Not documented'),
+
+        el('h3', 'Keyboard shortcuts'),
+        el('p', 'Not documented'),
+
+        el('h3', 'Settings'),
+        el('p', 'Not documented')
+      ])),
+
+      el('#settings.tinker-modal.hide', el('.well', [
+        el('h1', 'Tinker Settings'),
+        el('p', "So, looking for some settings, huh? Not much to see here yet I'm afraid."),
+        el('p', 'Close this modal by clicking outside of its bounds.'),
+
+        el('h3', 'Theme settings'),
+        el('p', el('.btn-group', [
+          el('button.btn.active', 'Default'),
+          el('button.btn', 'Twilight')
+        ])),
+
+        el('h3', 'Global settings'),
+        el('p', 'This is the stuff in your ~/.tinker file.'),
+
+        el('h3', 'Local settings'),
+        el('p', 'This is the stuff in your $PWD/.tinker file.')
+      ]))
+    ]);
+  };
+
+}(window.Tinker = {}, window.el));

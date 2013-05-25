@@ -5,46 +5,9 @@ html(lang="en")
     link(rel="stylesheet",href="/css/bootstrap.css")
     link(rel="stylesheet",href="/css/font-awesome.min.css")
     link(rel="stylesheet",href="/src/styles.less")
-
-  body
-    #editor.panel
-      #editor-container
-    #output.panel
-    #log-output
-    button#log-summary.btn-link
-
-    #buttons
-      button#help-button.btn-link: i.icon-question-sign.icon-2x
-      button#settings-button.btn-link: i.icon-cogs.icon-2x
-
-    #help.tinker-modal.hide
-      .well
-        h1 Tinker Help
-        p
-          | So, looking for some help, huh?
-          | Not much to see here yet I'm afraid.
-        p
-          | Close this modal by clicking outside of its bounds.
-        h3 About
-        p Not documented
-        h3 Keyboard shortcuts
-        p Not documented
-        h3 Settings
-        p Not documented
-
-    #settings.tinker-modal.hide
-      .well
-        h1 Tinker Settings
-        p
-          | So, looking for some settings, huh?
-          | Not much to see here yet I'm afraid.
-        p
-          | Close this modal by clicking outside of its bounds.
-        h3 Global settings
-        p This is the stuff in your ~/.tinker file.
-        h3 Local settings
-        p This is the stuff in your $PWD/.tinker file.
-
     script(src="/lib/ace.js",type="text/javascript",charset="utf-8")
     script(src="/lib/keybinding-vim.js",type="text/javascript",charset="utf-8")
+    script(src="/lib/elv.min.js",type="text/javascript",charset="utf-8")
     script(src="/src/main.js",type="text/javascript",charset="utf-8")
+    script(type="text/javascript",charset="utf-8")
+      window.onload = Tinker.start.bind(Tinker);
