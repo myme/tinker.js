@@ -142,19 +142,20 @@
 
     var JSRunner = function (options) {
       options = options || {};
+      this.win = options.window || window,
       this.debug = options.debug;
     };
 
     JSRunner.prototype.evaluate = function (javascript) {
-      return eval(javascript);
+      return this.win['eval'](javascript);
     };
 
     JSRunner.prototype.run = function (javascript) {
       var mockConsole = new MockConsole();
-      var _console = window.console;
+      var _console = this.win.console;
       var evaled;
 
-      window.console = mockConsole;
+      this.win.console = mockConsole;
       try {
         evaled = this.evaluate(javascript);
       } catch (e) {
@@ -162,7 +163,7 @@
           _console.error('EVAL ERROR:', e);
         }
       }
-      window.console = _console;
+      this.win.console = _console;
 
       return {
         value: evaled,
@@ -226,8 +227,12 @@
       },
 
       'javascript': function (javascript) {
-        var result = new JSRunner().run(javascript);
+        var frame = document.createElement('iframe');
+        var result = new JSRunner({
+          'window': frame.contentWindow
+        }).run(javascript);
         var value = result.value;
+
         if (javascript.trim()) {
           outputController.setOutput(JSON.stringify(value, 0, 2));
         } else {
