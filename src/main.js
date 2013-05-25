@@ -220,13 +220,59 @@
   }());
 
 
+  // Theme controller
+
+  var ThemeController = (function () {
+    var ThemeController = function (headEl, editor) {
+      this.headEl = headEl;
+      this.editor = editor;
+      this.themes = {};
+    };
+
+    ThemeController.prototype.addTheme = function (name, theme) {
+      this.themes[name] = theme;
+      return this;
+    };
+
+    ThemeController.prototype.setTheme = function (name) {
+      var theme = this.themes[name];
+      if (!theme) {
+        return this;
+      }
+      this.loadStyles('/src/' + theme.css + '.less');
+      this.editor.setTheme(theme.editor);
+      return this;
+    };
+
+    ThemeController.prototype.loadStyles = function (src) {
+      var head = this.headEl;
+      var oldStyle = this.styleEl;
+      var styleEl = document.createElement('link');
+
+      styleEl.rel = 'stylesheet';
+      styleEl.href = src;
+
+      if (oldStyle) {
+        head.insertBefore(styleEl, oldStyle);
+        head.removeChild(oldStyle);
+      } else {
+        head.appendChild(styleEl);
+      }
+
+      this.styleEl = styleEl;
+    };
+
+    return ThemeController;
+  }());
+
+
   // Editor
 
   var Editor = (function () {
     var Editor = function (options) {
       var editor = this.editor = ace.edit(options.selector);
 
-      ['keyboardHandler', 'theme'].forEach(function (each) {
+      ['keyboardHandler'].forEach(function (each) {
         var option = options[each];
         if (option) {
           var fn = 'set' + each.substr(0, 1).toUpperCase() + each.substr(1);
@@ -250,6 +296,10 @@
 
     Editor.prototype.setValue = function (value) {
       return this.editor.session.setValue(value);
+    };
+
+    Editor.prototype.setTheme = function (theme) {
+      this.editor.setTheme(theme);
     };
 
     Editor.prototype.onchange = function (callback) {
@@ -300,9 +350,19 @@
     var editor = new Editor({
       selector: 'editor-container',
       keyboardHandler: require('ace/keyboard/vim').handler,
-      theme: 'ace/theme/twilight',
       mode: 'ace/mode/javascript'
     });
+
+    var theme = new ThemeController(getEl('head')[0], editor)
+      .addTheme('light', {
+        editor: null,
+        css: 'light-theme'
+      })
+      .addTheme('dark', {
+        editor: 'ace/theme/twilight',
+        css: 'dark-theme'
+      })
+      .setTheme('light');
 
     editor.onchange(function (e) {
       var mode = editor.getMode();
