@@ -18,21 +18,31 @@ html(lang="en")
 
     #help.tinker-modal.hide
       .well
-        h3 Tinker Help
+        h1 Tinker Help
         p
           | So, looking for some help, huh?
           | Not much to see here yet I'm afraid.
         p
           | Close this modal by clicking outside of its bounds.
+        h3 About
+        p Not documented
+        h3 Keyboard shortcuts
+        p Not documented
+        h3 Settings
+        p Not documented
 
     #settings.tinker-modal.hide
       .well
-        h3 Tinker Settings
+        h1 Tinker Settings
         p
           | So, looking for some settings, huh?
           | Not much to see here yet I'm afraid.
         p
           | Close this modal by clicking outside of its bounds.
+        h3 Global settings
+        p This is the stuff in your ~/.tinker file.
+        h3 Local settings
+        p This is the stuff in your $PWD/.tinker file.
 
     script(src="/lib/ace.js",type="text/javascript",charset="utf-8")
     script(src="/lib/keybinding-vim.js",type="text/javascript",charset="utf-8")
