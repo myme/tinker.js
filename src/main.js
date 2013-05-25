@@ -358,9 +358,9 @@
         editor: null,
         css: 'light-theme'
       })
-      .addTheme('dark', {
+      .addTheme('twilight', {
         editor: 'ace/theme/twilight',
-        css: 'dark-theme'
+        css: 'twilight-theme'
       })
       .setTheme('light');
 
