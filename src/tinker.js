@@ -34,6 +34,20 @@
     el.className = classes.join(' ');
   };
 
+  var getOwnKeys = function (obj) {
+    var keys = [];
+    for (var key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        keys.push(key);
+      }
+    }
+    return keys;
+  };
+
+  var capitalize = function (string) {
+    return string.substr(0, 1).toLocaleUpperCase() + string.substr(1);
+  };
+
 
   // Output controller
   var OutputController = (function () {
@@ -220,6 +234,10 @@
       this.themes = {};
     };
 
+    ThemeController.prototype.onchange = function (callback) {
+      this.changeListener = callback;
+    };
+
     ThemeController.prototype.addTheme = function (name, theme) {
       this.themes[name] = theme;
       return this;
@@ -232,6 +250,10 @@
       }
       this.loadStyles('/src/' + theme.css + '.less');
       this.editor.setTheme(theme.editor);
+      this.activeTheme = name;
+      if (this.changeListener instanceof Function) {
+        this.changeListener();
+      }
       return this;
     };
 
@@ -254,6 +276,37 @@
     };
 
     return ThemeController;
+  }());
+
+
+  // Theme selector
+
+  var ThemeSelector = (function () {
+    var ThemeSelector = function (element, themeController) {
+      this.element = element;
+      this.themeController = themeController;
+      element.onclick = clickHandler(this.click, this);
+      themeController.onchange(this.render.bind(this));
+    };
+
+    ThemeSelector.prototype.click = function (e) {
+      if (e.target.tagName.toLowerCase() === 'button') {
+        var name = e.target.textContent.toLowerCase();
+        this.themeController.setTheme(name);
+      }
+    };
+
+    ThemeSelector.prototype.render = function () {
+      var active = this.themeController.activeTheme;
+      var themes = getOwnKeys(this.themeController.themes);
+      el(this.element, el('.btn-group', themes.map(function (name) {
+        var activeClass = name === active ? '.active' : '';
+        return el('button.btn' + activeClass, capitalize(name));
+      })));
+      return this;
+    };
+
+    return ThemeSelector;
   }());
 
 
@@ -413,10 +466,7 @@
           el('p', 'Close this modal by clicking outside of its bounds.'),
 
           el('h3', 'Theme settings'),
-          el('p', el('.btn-group', [
-            el('button.btn.active', 'Default'),
-            el('button.btn', 'Twilight')
-          ])),
+          new ThemeSelector(el('p'), this.themeController).render().element,
 
           el('h3', 'Global settings'),
           el('p', 'This is the stuff in your ~/.tinker file.'),
