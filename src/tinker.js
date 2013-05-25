@@ -248,7 +248,7 @@
       if (!theme) {
         return this;
       }
-      this.loadStyles('/src/' + theme.css + '.less');
+      this.loadStyles('/src/themes/' + theme.css + '.less');
       this.editor.setTheme(theme.editor);
       this.activeTheme = name;
       if (this.changeListener instanceof Function) {
@@ -377,11 +377,11 @@
       this.themeController = new ThemeController(document.head, this.editor)
         .addTheme('default', {
           editor: null,
-          css: 'default-theme'
+          css: 'default'
         })
         .addTheme('twilight', {
           editor: 'ace/theme/twilight',
-          css: 'twilight-theme'
+          css: 'twilight'
         });
     };
 
