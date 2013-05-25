@@ -50,6 +50,7 @@
 
 
   // Output controller
+
   var OutputController = (function () {
     var OutputController = function (outputEl) {
       this.outputEl = outputEl;
