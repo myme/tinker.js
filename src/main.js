@@ -183,16 +183,21 @@
 
   var HelpController = (function () {
     var HelpController = function (helpEl) {
-      helpEl.onclick = this.click.bind(this);
+      this.helpEl = helpEl;
+      helpEl.onclick = function (e) {
+        e.preventDefault();
+        if (e.target === this.helpEl) {
+          this.hide();
+        }
+      }.bind(this);
     };
 
-    HelpController.prototype.click = function (e) {
-      e.preventDefault();
-      this.showHelp();
+    HelpController.prototype.hide = function () {
+      this.helpEl.style.display = 'none';
     };
 
-    HelpController.prototype.showHelp = function () {
-      alert('Help is not implemented');
+    HelpController.prototype.show = function () {
+      this.helpEl.style.display = 'block';
     };
 
     return HelpController;
@@ -267,6 +272,7 @@
     };
 
     var help = new HelpController(getId('help'));
+    getId('help-button').onclick = help.show.bind(help);
 
     var editor = new Editor({
       selector: 'editor',
