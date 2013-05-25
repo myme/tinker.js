@@ -1,6 +1,6 @@
 /* jshint evil:true */
 
-(function (exports, el) {
+(function (el, exporter) {
 
   'use strict';
 
@@ -303,114 +303,121 @@
 
   // Tinker
 
-  exports.start = function (options) {
-    options = options || {};
-
-    this.render();
-
-    var outputController = new OutputController(this.outputEl);
-
-    var logController = new LogController({
-      summaryEl: this.logSummaryEl,
-      outputEl: this.logOutputEl
-    });
-
-    var help = new ModalController(this.helpEl);
-    this.helpBtnEl.onclick = clickHandler(help.show, help);
-
-    var settings = new ModalController(this.settingsEl);
-    this.settingsBtnEl.onclick = clickHandler(settings.show, settings);
-
-    var editor = new Editor({
-      selector: 'editor-container',
-      keyboardHandler: require('ace/keyboard/vim').handler,
-      mode: 'ace/mode/javascript'
-    });
-
-    var theme = new ThemeController(document.head, editor)
-      .addTheme('default', {
-        editor: null,
-        css: 'default-theme'
-      })
-      .addTheme('twilight', {
-        editor: 'ace/theme/twilight',
-        css: 'twilight-theme'
-      })
-      .setTheme(options.theme || 'default');
-
-    var handlers = {
-      'default': function (value) {
-        outputController.setOutput(value);
-      },
-
-      'javascript': function (javascript) {
-        var frame = document.createElement('iframe');
-        var result = new JSRunner({
-          'window': frame.contentWindow
-        }).run(javascript);
-        var value = result.value;
-
-        if (javascript.trim()) {
-          outputController.setOutput(JSON.stringify(value, 0, 2));
-        } else {
-          outputController.setOutput(null);
-        }
-        logController.setLogs(result.logs);
-      }
+  exporter(function () {
+    var Tinker = function (options) {
+      this.options = options || {};
     };
 
-    editor.onchange(function (e) {
-      var mode = editor.getMode();
-      var handler = (mode && handlers[mode]) || handlers['default'];
-      handler(editor.getValue());
-    });
-  };
+    Tinker.prototype.start = function () {
+      this.render();
 
-  exports.render = function () {
-    el(document.body, [
-      el('#editor.panel', el('#editor-container')),
-      this.outputEl     = el('#output.panel'),
-      this.logOutputEl  = el('#log-output'),
-      this.logSummaryEl = el('button#log-summary.btn-link'),
+      var outputController = new OutputController(this.outputEl);
 
-      el('#buttons', [
-        this.helpBtnEl     = el('button#help-button.btn-link', el('i.icon-question-sign.icon-2x')),
-        this.settingsBtnEl = el('button#settings-button.btn-link', el('i.icon-cogs.icon-2x'))
-      ]),
+      var logController = new LogController({
+        summaryEl: this.logSummaryEl,
+        outputEl: this.logOutputEl
+      });
 
-      this.helpEl = el('#help.tinker-modal.hide', el('.well', [
-        el('h1', 'Tinker Help'),
-        el('p', "So, looking for some help, huh? Not much to see here yet I'm afraid."),
-        el('p', "Close this modal by clicking outside of its bounds."),
+      var help = new ModalController(this.helpEl);
+      this.helpBtnEl.onclick = clickHandler(help.show, help);
 
-        el('h3', 'About'),
-        el('p', 'Not documented'),
+      var settings = new ModalController(this.settingsEl);
+      this.settingsBtnEl.onclick = clickHandler(settings.show, settings);
 
-        el('h3', 'Keyboard shortcuts'),
-        el('p', 'Not documented'),
+      var editor = new Editor({
+        selector: 'editor-container',
+        keyboardHandler: require('ace/keyboard/vim').handler,
+        mode: 'ace/mode/javascript'
+      });
 
-        el('h3', 'Settings'),
-        el('p', 'Not documented')
-      ])),
+      var theme = new ThemeController(document.head, editor)
+        .addTheme('default', {
+          editor: null,
+          css: 'default-theme'
+        })
+        .addTheme('twilight', {
+          editor: 'ace/theme/twilight',
+          css: 'twilight-theme'
+        })
+        .setTheme(this.options.theme || 'default');
 
-      this.settingsEl = el('#settings.tinker-modal.hide', el('.well', [
-        el('h1', 'Tinker Settings'),
-        el('p', "So, looking for some settings, huh? Not much to see here yet I'm afraid."),
-        el('p', 'Close this modal by clicking outside of its bounds.'),
+      var handlers = {
+        'default': function (value) {
+          outputController.setOutput(value);
+        },
 
-        el('h3', 'Theme settings'),
-        el('p', el('.btn-group', [
-          el('button.btn.active', 'Default'),
-          el('button.btn', 'Twilight')
+        'javascript': function (javascript) {
+          var frame = document.createElement('iframe');
+          var result = new JSRunner({
+            'window': frame.contentWindow
+          }).run(javascript);
+          var value = result.value;
+
+          if (javascript.trim()) {
+            outputController.setOutput(JSON.stringify(value, 0, 2));
+          } else {
+            outputController.setOutput(null);
+          }
+          logController.setLogs(result.logs);
+        }
+      };
+
+      editor.onchange(function (e) {
+        var mode = editor.getMode();
+        var handler = (mode && handlers[mode]) || handlers['default'];
+        handler(editor.getValue());
+      });
+    };
+
+    Tinker.prototype.render = function () {
+      el(document.body, [
+        el('#editor.panel', el('#editor-container')),
+        this.outputEl     = el('#output.panel'),
+        this.logOutputEl  = el('#log-output'),
+        this.logSummaryEl = el('button#log-summary.btn-link'),
+
+        el('#buttons', [
+          this.helpBtnEl     = el('button#help-button.btn-link', el('i.icon-question-sign.icon-2x')),
+          this.settingsBtnEl = el('button#settings-button.btn-link', el('i.icon-cogs.icon-2x'))
+        ]),
+
+        this.helpEl = el('#help.tinker-modal.hide', el('.well', [
+          el('h1', 'Tinker Help'),
+          el('p', "So, looking for some help, huh? Not much to see here yet I'm afraid."),
+          el('p', "Close this modal by clicking outside of its bounds."),
+
+          el('h3', 'About'),
+          el('p', 'Not documented'),
+
+          el('h3', 'Keyboard shortcuts'),
+          el('p', 'Not documented'),
+
+          el('h3', 'Settings'),
+          el('p', 'Not documented')
         ])),
 
-        el('h3', 'Global settings'),
-        el('p', 'This is the stuff in your ~/.tinker file.'),
+        this.settingsEl = el('#settings.tinker-modal.hide', el('.well', [
+          el('h1', 'Tinker Settings'),
+          el('p', "So, looking for some settings, huh? Not much to see here yet I'm afraid."),
+          el('p', 'Close this modal by clicking outside of its bounds.'),
 
-        el('h3', 'Local settings'),
-        el('p', 'This is the stuff in your $PWD/.tinker file.')
-      ]))
-    ]);
-  };
+          el('h3', 'Theme settings'),
+          el('p', el('.btn-group', [
+            el('button.btn.active', 'Default'),
+            el('button.btn', 'Twilight')
+          ])),
 
-}(window.Tinker = {}, window.el));
+          el('h3', 'Global settings'),
+          el('p', 'This is the stuff in your ~/.tinker file.'),
+
+          el('h3', 'Local settings'),
+          el('p', 'This is the stuff in your $PWD/.tinker file.')
+        ]))
+      ]);
+      return this;
+    };
+
+    return Tinker;
+  }());
+
+}(window.el, function (module) { window.Tinker = module; }));
