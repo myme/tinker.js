@@ -379,6 +379,10 @@
           editor: null,
           css: 'default'
         })
+        .addTheme('idle fingers', {
+          editor: 'ace/theme/idle_fingers',
+          css: 'idle-fingers'
+        })
         .addTheme('twilight', {
           editor: 'ace/theme/twilight',
           css: 'twilight'
