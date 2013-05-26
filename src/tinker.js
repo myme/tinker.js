@@ -280,24 +280,24 @@
   }());
 
 
-  // Theme selector
+  // Theme selector view
 
-  var ThemeSelector = (function () {
-    var ThemeSelector = function (element, themeController) {
+  var ThemeSelectorView = (function () {
+    var ThemeSelectorView = function (element, themeController) {
       this.element = element;
       this.themeController = themeController;
       element.onclick = clickHandler(this.click, this);
       themeController.onchange(this.render.bind(this));
     };
 
-    ThemeSelector.prototype.click = function (e) {
+    ThemeSelectorView.prototype.click = function (e) {
       if (e.target.tagName.toLowerCase() === 'button') {
         var name = e.target.textContent.toLowerCase();
         this.themeController.setTheme(name);
       }
     };
 
-    ThemeSelector.prototype.render = function () {
+    ThemeSelectorView.prototype.render = function () {
       var active = this.themeController.activeTheme;
       var themes = getOwnKeys(this.themeController.themes);
       el(this.element, el('.btn-group', themes.map(function (name) {
@@ -307,7 +307,7 @@
       return this;
     };
 
-    return ThemeSelector;
+    return ThemeSelectorView;
   }());
 
 
@@ -472,7 +472,7 @@
           el('p', 'Close this modal by clicking outside of its bounds.'),
 
           el('h3', 'Theme settings'),
-          new ThemeSelector(el('p'), this.themeController).render().element,
+          new ThemeSelectorView(el('p'), this.themeController).render().element,
 
           el('h3', 'Global settings'),
           el('p', 'This is the stuff in your ~/.tinker file.'),
