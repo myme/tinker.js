@@ -5,11 +5,12 @@ html(lang="en")
     link(rel="stylesheet",href="/css/bootstrap.css")
     link(rel="stylesheet",href="/css/font-awesome.min.css")
     link(rel="stylesheet",href="/src/styles.less")
-    script(src="/lib/ace.js",type="text/javascript",charset="utf-8")
-    script(src="/lib/keybinding-vim.js",type="text/javascript",charset="utf-8")
-    script(src="/lib/elv.min.js",type="text/javascript",charset="utf-8")
-    script(src="/src/tinker.js",type="text/javascript",charset="utf-8")
+    script(src="/lib/LAB.min.js",type="text/javascript",charset="utf-8")
     script(type="text/javascript",charset="utf-8")
-      window.onload = function () {
-        new Tinker({ theme: 'default' }).start();
-      };
+      $LAB
+        .script("/lib/ace.js")
+        .script("/lib/keybinding-vim.js")
+        .script("/lib/elv.min.js")
+        .script("/src/tinker.js").wait(function () {
+          new Tinker({ theme: 'default' }).start();
+        });
