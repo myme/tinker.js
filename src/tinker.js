@@ -1,53 +1,9 @@
 /* jshint evil:true */
 
-(function (el, exporter) {
+window.Tinker = window.Tinker || {};
+window.Tinker = (function (el, utils) {
 
   'use strict';
-
-  var hideEl = function (element) {
-    element.style.display = 'none';
-  };
-
-  var showEl = function (element) {
-    element.style.display = 'block';
-  };
-
-  var clickHandler = function (callback, context) {
-    return function (e) {
-      e.preventDefault();
-      callback.call(context || null, e);
-    };
-  };
-
-  var addClass = function (el, className) {
-    var classes = el.className.split(/\s+/).filter(function (e) {
-      return e !== className;
-    });
-    classes.push(className);
-    el.className = classes.join(' ');
-  };
-
-  var removeClass = function (el, className) {
-    var classes = el.className.split(/\s+/).filter(function (e) {
-      return e !== className;
-    });
-    el.className = classes.join(' ');
-  };
-
-  var getOwnKeys = function (obj) {
-    var keys = [];
-    for (var key in obj) {
-      if (obj.hasOwnProperty(key)) {
-        keys.push(key);
-      }
-    }
-    return keys;
-  };
-
-  var capitalize = function (string) {
-    return string.substr(0, 1).toLocaleUpperCase() + string.substr(1);
-  };
-
 
   // Output controller
 
@@ -74,26 +30,26 @@
     var LogController = function (options) {
       this.summaryEl = options.summaryEl;
       this.outputEl  = options.outputEl;
-      this.summaryEl.onclick = clickHandler(this.showLogs, this);
-      this.outputEl.onclick  = clickHandler(this.hideLogs, this);
+      this.summaryEl.onclick = utils.clickHandler(this.showLogs, this);
+      this.outputEl.onclick  = utils.clickHandler(this.hideLogs, this);
       this.hideLogs();
       this.setLogs([]);
     };
 
     LogController.prototype.hideAll = function () {
-      hideEl(this.summaryEl);
-      hideEl(this.outputEl);
+      utils.hideEl(this.summaryEl);
+      utils.hideEl(this.outputEl);
     };
 
     LogController.prototype.showLogs = function () {
-      hideEl(this.summaryEl);
-      showEl(this.outputEl);
+      utils.hideEl(this.summaryEl);
+      utils.showEl(this.outputEl);
       this.shouldShowLogs = true;
     };
 
     LogController.prototype.hideLogs = function () {
-      hideEl(this.outputEl);
-      showEl(this.summaryEl);
+      utils.hideEl(this.outputEl);
+      utils.showEl(this.summaryEl);
       this.shouldShowLogs = false;
     };
 
@@ -207,7 +163,7 @@
   var ModalController = (function () {
     var ModalController = function (modalEl) {
       this.modalEl = modalEl;
-      modalEl.onclick = clickHandler(function (e) {
+      modalEl.onclick = utils.clickHandler(function (e) {
         if (e.target === this.modalEl) {
           this.hide();
         }
@@ -215,11 +171,11 @@
     };
 
     ModalController.prototype.hide = function () {
-      addClass(this.modalEl, 'hide');
+      utils.addClass(this.modalEl, 'hide');
     };
 
     ModalController.prototype.show = function () {
-      removeClass(this.modalEl, 'hide');
+      utils.removeClass(this.modalEl, 'hide');
     };
 
     return ModalController;
@@ -286,7 +242,7 @@
     var ThemeSelectorView = function (element, themeController) {
       this.element = element;
       this.themeController = themeController;
-      element.onclick = clickHandler(this.click, this);
+      element.onclick = utils.clickHandler(this.click, this);
       themeController.onchange(this.render.bind(this));
     };
 
@@ -299,10 +255,10 @@
 
     ThemeSelectorView.prototype.render = function () {
       var active = this.themeController.activeTheme;
-      var themes = getOwnKeys(this.themeController.themes);
+      var themes = utils.getOwnKeys(this.themeController.themes);
       el(this.element, el('.btn-group', themes.map(function (name) {
         var activeClass = name === active ? '.active' : '';
-        return el('button.btn' + activeClass, capitalize(name));
+        return el('button.btn' + activeClass, utils.capitalize(name));
       })));
       return this;
     };
@@ -365,7 +321,7 @@
 
   // Tinker
 
-  exporter(function () {
+  return (function () {
     var Tinker = function (options) {
       this.options = options || {};
 
@@ -422,10 +378,10 @@
       });
 
       var help = new ModalController(this.helpEl);
-      this.helpBtnEl.onclick = clickHandler(help.show, help);
+      this.helpBtnEl.onclick = utils.clickHandler(help.show, help);
 
       var settings = new ModalController(this.settingsEl);
-      this.settingsBtnEl.onclick = clickHandler(settings.show, settings);
+      this.settingsBtnEl.onclick = utils.clickHandler(settings.show, settings);
 
       var handlers = this.handlers;
       var editor = this.editor
@@ -487,4 +443,4 @@
     return Tinker;
   }());
 
-}(window.el, function (module) { window.Tinker = module; }));
+}(window.el, window.Tinker.utils));
