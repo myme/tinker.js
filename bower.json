@@ -8,7 +8,6 @@
   ],
   "dependencies": {
     "ace-builds": "~1.0.0",
-    "bootstrap": "~2.3.2",
-    "labjs": "latest"
+    "bootstrap": "~2.3.2"
   }
 }
