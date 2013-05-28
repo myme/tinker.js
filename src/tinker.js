@@ -1,5 +1,5 @@
 window.Tinker = window.Tinker || {};
-window.Tinker = (function (el, utils, JSRunner) {
+window.Tinker = (function (el, utils) {
 
   'use strict';
 
@@ -285,26 +285,7 @@ window.Tinker = (function (el, utils, JSRunner) {
         });
     };
 
-    Tinker.prototype.handlers = {
-      'default': function (value) {
-        this.outputController.setOutput(value);
-      },
-
-      'javascript': function (javascript) {
-        var frame = document.createElement('iframe');
-        var result = new JSRunner({
-          'window': frame.contentWindow
-        }).run(javascript);
-        var value = result.value;
-
-        if (javascript.trim()) {
-          this.outputController.setOutput(JSON.stringify(value, 0, 2));
-        } else {
-          this.outputController.setOutput(null);
-        }
-        this.logController.setLogs(result.logs);
-      }
-    };
+    Tinker.prototype.handlers = {};
 
     Tinker.prototype.start = function () {
       this.render();
@@ -379,7 +360,15 @@ window.Tinker = (function (el, utils, JSRunner) {
       return this;
     };
 
+    Tinker.addHandler = function (type, handler) {
+      Tinker.prototype.handlers[type] = handler;
+    };
+
+    Tinker.addHandler('default', function (value) {
+      this.outputController.setOutput(value);
+    });
+
     return Tinker;
   }());
 
-}(window.el, window.Tinker.utils, window.Tinker.JSRunner));
+}(window.el, window.Tinker.utils));

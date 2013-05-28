@@ -1,7 +1,6 @@
 /* jshint evil:true */
 
-window.Tinker = window.Tinker || {};
-window.Tinker.JSRunner = (function () {
+(function (Tinker) {
 
   'use strict';
 
@@ -59,6 +58,19 @@ window.Tinker.JSRunner = (function () {
     };
   };
 
-  return JSRunner;
+  Tinker.addHandler('javascript', function (javascript) {
+    var frame = document.createElement('iframe');
+    var result = new JSRunner({
+      'window': frame.contentWindow
+    }).run(javascript);
+    var value = result.value;
 
-}());
+    if (javascript.trim()) {
+      this.outputController.setOutput(JSON.stringify(value, 0, 2));
+    } else {
+      this.outputController.setOutput(null);
+    }
+    this.logController.setLogs(result.logs);
+  });
+
+}(window.Tinker));
