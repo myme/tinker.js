@@ -130,16 +130,24 @@ window.Tinker = (function (el, utils) {
       this.themes = {};
     };
 
+    ThemeController.prototype.getActive = function () {
+      return this.activeTheme;
+    };
+
+    ThemeController.prototype.getKeys = function () {
+      return utils.getOwnKeys(this.themes);
+    };
+
     ThemeController.prototype.onchange = function (callback) {
       this.changeListener = callback;
     };
 
-    ThemeController.prototype.addTheme = function (name, theme) {
+    ThemeController.prototype.add = function (name, theme) {
       this.themes[name] = theme;
       return this;
     };
 
-    ThemeController.prototype.setTheme = function (name) {
+    ThemeController.prototype.set = function (name) {
       var theme = this.themes[name];
       if (!theme) {
         return this;
@@ -175,34 +183,44 @@ window.Tinker = (function (el, utils) {
   }());
 
 
-  // Theme selector view
 
-  var ThemeSelectorView = (function () {
-    var ThemeSelectorView = function (element, themeController) {
+  // List select view
+
+  var ListSelectView = (function () {
+    var ListSelectView = function (element, controller) {
       this.element = element;
-      this.themeController = themeController;
+      this.controller = controller;
+      this.keyMap = [];
       element.onclick = utils.clickHandler(this.click, this);
-      themeController.onchange(this.render.bind(this));
+      controller.onchange(this.render.bind(this));
     };
 
-    ThemeSelectorView.prototype.click = function (e) {
-      if (e.target.tagName.toLowerCase() === 'button') {
-        var name = e.target.textContent.toLowerCase();
-        this.themeController.setTheme(name);
+    ListSelectView.prototype.click = function (e) {
+      var map = this.keyMap;
+      var i, l;
+      for (i = 0, l = map.length; i < l; i++) {
+        if (e.target === map[i][1]) {
+          this.controller.set(map[i][0]);
+          break;
+        }
       }
     };
 
-    ThemeSelectorView.prototype.render = function () {
-      var active = this.themeController.activeTheme;
-      var themes = utils.getOwnKeys(this.themeController.themes);
-      el(this.element, el('.btn-group', themes.map(function (name) {
-        var activeClass = name === active ? '.active' : '';
-        return el('button.btn' + activeClass, utils.capitalize(name));
-      })));
+    ListSelectView.prototype.render = function () {
+      var keys = this.controller.getKeys();
+      var active = this.controller.getActive();
+      this.keyMap = keys.map(function (key) {
+        var activeClass = key === active ? '.active' : '';
+        return [
+          key,
+          el('button.btn' + activeClass, utils.capitalize(key))
+        ];
+      });
+      el(this.element, el('.btn-group', this.keyMap.map(utils.at(1))));
       return this;
     };
 
-    return ThemeSelectorView;
+    return ListSelectView;
   }());
 
 
@@ -271,15 +289,15 @@ window.Tinker = (function (el, utils) {
       });
 
       this.themeController = new ThemeController(document.head, this.editor)
-        .addTheme('default', {
+        .add('default', {
           editor: null,
           css: 'default'
         })
-        .addTheme('idle fingers', {
+        .add('idle fingers', {
           editor: 'ace/theme/idle_fingers',
           css: 'idle-fingers'
         })
-        .addTheme('twilight', {
+        .add('twilight', {
           editor: 'ace/theme/twilight',
           css: 'twilight'
         });
@@ -312,7 +330,7 @@ window.Tinker = (function (el, utils) {
           handler.call(this, editor.getValue());
         }.bind(this));
 
-      this.themeController.setTheme(this.options.theme || 'default');
+      this.themeController.set(this.options.theme || 'default');
     };
 
     Tinker.prototype.render = function () {
@@ -348,7 +366,7 @@ window.Tinker = (function (el, utils) {
           el('p', 'Close this modal by clicking outside of its bounds.'),
 
           el('h3', 'Theme settings'),
-          new ThemeSelectorView(el('p'), this.themeController).render().element,
+          new ListSelectView(el('p'), this.themeController).render().element,
 
           el('h3', 'Global settings'),
           el('p', 'This is the stuff in your ~/.tinker file.'),

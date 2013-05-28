@@ -4,6 +4,10 @@ window.Tinker.utils = (function () {
   'use strict';
 
   return {
+    at: function (idx) {
+      return function (arr) { return arr[idx]; };
+    },
+
     hideEl: function (element) {
       element.style.display = 'none';
     },
