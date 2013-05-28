@@ -183,6 +183,37 @@ window.Tinker = (function (el, utils) {
   }());
 
 
+  // Mode controller
+
+  var ModeController = (function () {
+    var ModeController = function (handlers, editor) {
+      this.handlers = handlers;
+      this.editor = editor;
+    };
+
+    ModeController.prototype.getActive = function () {
+      return this.editor.getMode();
+    };
+
+    ModeController.prototype.getKeys = function () {
+      return utils.getOwnKeys(this.handlers);
+    };
+
+    ModeController.prototype.onchange = function (callback) {
+      this.changeListener = callback;
+    };
+
+    ModeController.prototype.set = function (mode) {
+      this.editor.setMode(mode);
+      if (this.changeListener instanceof Function) {
+        this.changeListener();
+      }
+      return this;
+    };
+
+    return ModeController;
+  }());
+
 
   // List select view
 
@@ -229,11 +260,7 @@ window.Tinker = (function (el, utils) {
   var Editor = (function () {
     var Editor = function (options) {
       this.options = options || {};
-    };
-
-    Editor.prototype.getMode = function () {
-      var id = this.editor.getSession().getMode().$id;
-      return id ? id.split('/').pop() : null;
+      this._mode = 'default';
     };
 
     Editor.prototype.getValue = function () {
@@ -244,6 +271,27 @@ window.Tinker = (function (el, utils) {
       return this.editor.session.setValue(value);
     };
 
+    Editor.prototype.getMode = function () {
+      return this._mode;
+    };
+
+    Editor.prototype.setMode = function (mode) {
+      this._mode = !mode ? 'default' : mode;
+      if (!mode || mode === 'default') {
+        mode = null;
+      } else {
+        mode = 'ace/mode/' + mode;
+      }
+      if (this.hasStarted) {
+        this.editor.getSession().setMode(mode);
+      } else {
+        this.options.mode = mode;
+      }
+      if (this._callback instanceof Function) {
+        this._callback();
+      }
+    };
+
     Editor.prototype.setTheme = function (theme) {
       this.editor.setTheme(theme);
     };
@@ -251,6 +299,7 @@ window.Tinker = (function (el, utils) {
     Editor.prototype.start = function () {
       var options = this.options;
       var editor = this.editor = ace.edit(options.selector);
+      this.hasStarted = true;
 
       ['keyboardHandler'].forEach(function (each) {
         var option = options[each];
@@ -260,14 +309,13 @@ window.Tinker = (function (el, utils) {
         }
       });
 
-      if (options.mode) {
-        editor.getSession().setMode(options.mode);
-      }
+      this.setMode(this.options.mode);
 
       return this;
     };
 
     Editor.prototype.onchange = function (callback) {
+      this._callback = callback;
       this.editor.getSession().on('change', callback);
       return this;
     };
@@ -284,9 +332,10 @@ window.Tinker = (function (el, utils) {
 
       this.editor = new Editor({
         selector: 'editor-container',
-        keyboardHandler: require('ace/keyboard/vim').handler,
-        mode: 'ace/mode/javascript'
+        keyboardHandler: require('ace/keyboard/vim').handler
       });
+
+      this.modeController = new ModeController(this.handlers, this.editor);
 
       this.themeController = new ThemeController(document.head, this.editor)
         .add('default', {
@@ -330,6 +379,7 @@ window.Tinker = (function (el, utils) {
           handler.call(this, editor.getValue());
         }.bind(this));
 
+      this.modeController.set(this.options.mode || 'default');
       this.themeController.set(this.options.theme || 'default');
     };
 
@@ -364,6 +414,9 @@ window.Tinker = (function (el, utils) {
           el('h1', 'Tinker Settings'),
           el('p', "So, looking for some settings, huh? Not much to see here yet I'm afraid."),
           el('p', 'Close this modal by clicking outside of its bounds.'),
+
+          el('h3', 'Editor mode'),
+          new ListSelectView(el('p'), this.modeController).render().element,
 
           el('h3', 'Theme settings'),
           new ListSelectView(el('p'), this.themeController).render().element,
