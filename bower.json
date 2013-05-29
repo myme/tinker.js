@@ -8,6 +8,7 @@
   ],
   "dependencies": {
     "ace-builds": "~1.0.0",
-    "bootstrap": "~2.3.2"
+    "bootstrap": "~2.3.2",
+    "coffee-script": "~1.6.2"
   }
 }
