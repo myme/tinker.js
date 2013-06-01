@@ -8,10 +8,14 @@ var path = require('path');
 
 var optimist = require('optimist')
   .usage('Usage $0 [files]')
+  .default('mode', 'javascript')
   .default('port', 3000)
+  .default('theme', 'default')
   .alias('p', 'port')
   .alias('h', 'help')
+  .describe('mode', 'The inital editor mode')
   .describe('port', 'Run server on designated port')
+  .describe('theme', 'The inital editor theme')
   .describe('help', 'Show this help text');
 
 var argv = optimist.argv;
@@ -63,7 +67,9 @@ scripts = scripts.concat(argv._.map(function (filename) {
 
 app.get('/', function (req, res) {
   res.render('index', {
-    scripts: scripts
+    mode: argv.mode,
+    scripts: scripts,
+    theme: argv.theme
   });
 });
 
