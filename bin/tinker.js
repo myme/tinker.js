@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-/*jshint es5: true */
 
 var express = require('express');
 var compiless = require('express-compiless');
