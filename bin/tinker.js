@@ -39,11 +39,13 @@ var scripts = [
   '/lib/ace.js',
   '/lib/keybinding-vim.js',
   '/lib/coffee-script.js',
+  '/lib/markdown.js',
   '/lib/elv.min.js',
   '/src/utils.js',
   '/src/tinker.js',
   '/src/tinker_coffee.js',
-  '/src/tinker_javascript.js'
+  '/src/tinker_javascript.js',
+  '/src/tinker_markdown.js'
 ];
 
 argv._.forEach(function (filename) {
