@@ -43,9 +43,9 @@ var scripts = [
   '/lib/elv.min.js',
   '/src/utils.js',
   '/src/tinker.js',
-  '/src/tinker_coffee.js',
-  '/src/tinker_javascript.js',
-  '/src/tinker_markdown.js'
+  '/src/extensions/coffee.js',
+  '/src/extensions/javascript.js',
+  '/src/extensions/markdown.js'
 ];
 
 argv._.forEach(function (filename) {
