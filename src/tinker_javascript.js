@@ -64,9 +64,17 @@
       'window': frame.contentWindow
     }).run(javascript);
     var value = result.value;
-    this.outputView.setOutput(
-      el('pre', el('code', JSON.stringify(value, 0, 2)))
-    );
+    if (value && value.nodeType === 1) {
+      this.outputView.setOutput(value);
+    } else {
+      var json;
+      try {
+        json = JSON.stringify(value, 0, 2);
+      } catch (e) {}
+      this.outputView.setOutput(
+        el('pre', el('code', json || ''))
+      );
+    }
     this.logController.setLogs(result.logs);
   });
 
