@@ -1,6 +1,6 @@
 /* jshint evil:true */
 
-(function (Tinker) {
+(function (el, Tinker) {
 
   'use strict';
 
@@ -64,13 +64,10 @@
       'window': frame.contentWindow
     }).run(javascript);
     var value = result.value;
-
-    if (javascript.trim()) {
-      this.outputView.setOutput(JSON.stringify(value, 0, 2));
-    } else {
-      this.outputView.setOutput(null);
-    }
+    this.outputView.setOutput(
+      el('pre', el('code', JSON.stringify(value, 0, 2)))
+    );
     this.logController.setLogs(result.logs);
   });
 
-}(window.Tinker));
+}(window.el, window.Tinker));

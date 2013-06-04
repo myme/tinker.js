@@ -1,15 +1,15 @@
-(function (Tinker) {
+(function (el, Tinker) {
 
   'use strict';
 
   Tinker.addHandler('coffee', function (coffee) {
     var compiled;
     try {
-      compiled = CoffeeScript.compile(coffee);
+      compiled = el('pre', el('code', CoffeeScript.compile(coffee)));
     } catch (e) {
       compiled = '';
     }
     this.outputView.setOutput(compiled);
   });
 
-}(window.Tinker));
+}(window.el, window.Tinker));

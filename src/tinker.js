@@ -1,5 +1,5 @@
 window.Tinker = window.Tinker || {};
-window.Tinker = (function (el, utils) {
+window.Tinker = (function (el, css, utils) {
 
   'use strict';
 
@@ -11,17 +11,19 @@ window.Tinker = (function (el, utils) {
     };
 
     OutputView.prototype.render = function () {
-      el(this.el, this._frame = el('iframe'));
+      var frame;
+      el(this.el, frame = this._frame = el('iframe'));
+      setTimeout(function () {
+        el(frame.contentDocument.head, [
+          el('link(rel="stylesheet",href="/css/bootstrap.css")'),
+          el('style', css({ 'body': { 'padding': '10px' }}))
+        ]);
+      }, 0);
       return this;
     };
 
     OutputView.prototype.setOutput = function (output) {
-      var body = this._frame.contentDocument.body;
-      if (output !== null ) {
-        body.innerHTML = "<pre><code>" + output  + "<\/code><\/pre>";
-      } else {
-        body.innerHTML = '';
-      }
+      el(this._frame.contentDocument.body, output);
     };
 
     return OutputView;
@@ -448,4 +450,4 @@ window.Tinker = (function (el, utils) {
     return Tinker;
   }());
 
-}(window.el, window.Tinker.utils));
+}(window.el, window.el.css, window.Tinker.utils));

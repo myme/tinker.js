@@ -9,7 +9,7 @@
     } catch (e) {
       compiled = '';
     }
-    this.outputView.setOutput(compiled);
+    this.outputView.setOutput(el('.markdown', { html: compiled }));
   });
 
 }(window.Tinker, window.markdown));
