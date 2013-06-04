@@ -9,7 +9,7 @@
     } catch (e) {
       compiled = '';
     }
-    this.outputController.setOutput(compiled);
+    this.outputView.setOutput(compiled);
   });
 
 }(window.Tinker));

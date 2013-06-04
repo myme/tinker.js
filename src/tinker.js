@@ -3,22 +3,28 @@ window.Tinker = (function (el, utils) {
 
   'use strict';
 
-  // Output controller
+  // Output view
 
-  var OutputController = (function () {
-    var OutputController = function (outputEl) {
-      this.outputEl = outputEl;
+  var OutputView = (function () {
+    var OutputView = function (outputEl) {
+      this.el = outputEl;
     };
 
-    OutputController.prototype.setOutput = function (output) {
+    OutputView.prototype.render = function () {
+      el(this.el, this._frame = el('iframe'));
+      return this;
+    };
+
+    OutputView.prototype.setOutput = function (output) {
+      var body = this._frame.contentDocument.body;
       if (output !== null ) {
-        this.outputEl.innerHTML = "<pre><code>" + output  + "<\/code><\/pre>";
+        body.innerHTML = "<pre><code>" + output  + "<\/code><\/pre>";
       } else {
-        this.outputEl.innerHTML = '';
+        body.innerHTML = '';
       }
     };
 
-    return OutputController;
+    return OutputView;
   }());
 
 
@@ -357,8 +363,6 @@ window.Tinker = (function (el, utils) {
     Tinker.prototype.start = function () {
       this.render();
 
-      this.outputController = new OutputController(this.outputEl);
-
       this.logController = new LogController({
         summaryEl: this.logSummaryEl,
         outputEl: this.logOutputEl
@@ -384,9 +388,11 @@ window.Tinker = (function (el, utils) {
     };
 
     Tinker.prototype.render = function () {
+      this.outputView = new OutputView(el('#output.panel'));
+
       el(document.body, [
         el('#editor.panel', el('#editor-container')),
-        this.outputEl     = el('#output.panel'),
+        this.outputView.render().el,
         this.logOutputEl  = el('#log-output'),
         this.logSummaryEl = el('button#log-summary.btn-link'),
 
@@ -436,7 +442,7 @@ window.Tinker = (function (el, utils) {
     };
 
     Tinker.addHandler('default', function (value) {
-      this.outputController.setOutput(value);
+      this.outputView.setOutput(value);
     });
 
     return Tinker;

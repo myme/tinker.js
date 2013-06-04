@@ -66,9 +66,9 @@
     var value = result.value;
 
     if (javascript.trim()) {
-      this.outputController.setOutput(JSON.stringify(value, 0, 2));
+      this.outputView.setOutput(JSON.stringify(value, 0, 2));
     } else {
-      this.outputController.setOutput(null);
+      this.outputView.setOutput(null);
     }
     this.logController.setLogs(result.logs);
   });
