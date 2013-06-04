@@ -29,7 +29,7 @@
 
   var JSRunner = function (options) {
     options = options || {};
-    this.win = options.window || window,
+    this.win = options.window || window;
     this.debug = options.debug;
   };
 
