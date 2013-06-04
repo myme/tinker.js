@@ -362,6 +362,10 @@ window.Tinker = (function (el, css, utils) {
 
     Tinker.prototype.handlers = {};
 
+    Tinker.prototype.log = function () {
+      this.logController.setLogs.apply(this.logController, arguments);
+    };
+
     Tinker.prototype.start = function () {
       this.render();
 
@@ -437,6 +441,17 @@ window.Tinker = (function (el, css, utils) {
         ]))
       ]);
       return this;
+    };
+
+    Tinker.prototype.runJS = function (javascript) {
+      var runner = new Tinker.JSRunner({
+        'window': this.outputView._frame.contentWindow
+      });
+      return runner.run(javascript);
+    };
+
+    Tinker.prototype.output = function (output) {
+      this.outputView.setOutput(output);
     };
 
     Tinker.addHandler = function (type, handler) {
