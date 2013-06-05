@@ -26,23 +26,19 @@ requirejs.config({
   }
 });
 
-require([
-  'jquery',
-  'tinker/tinker',
-  'tinker/extensions/coffee',
-  'tinker/extensions/javascript',
-  'tinker/extensions/markdown'
-], function ($, Tinker) {
+(function () {
 
   'use strict';
 
-  var config = {
-    mode: 'markdown',
-    theme: 'twilight'
-  };
-
-  $(function () {
-    new Tinker(config).start();
+  var extensions = TinkerConfig.extensions.map(function (each) {
+    return 'tinker/extensions/' + each;
   });
 
-});
+  require([
+    'jquery',
+    'tinker/tinker'
+  ].concat(extensions), function ($, Tinker) {
+    $(function () { new Tinker(TinkerConfig).start(); });
+  });
+
+}());

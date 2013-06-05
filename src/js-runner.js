@@ -4,8 +4,6 @@ define(function () {
 
   'use strict';
 
-  // JavaScript runner
-
   var MockConsole = (function () {
     var genLogger = function (severity) {
       return function () {
