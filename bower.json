@@ -10,6 +10,8 @@
     "ace-builds": "~1.0.0",
     "bootstrap": "~2.3.2",
     "coffee-script": "~1.6.2",
-    "markdown": "~0.4.0"
+    "markdown": "~0.4.0",
+    "backbone": "~1.0.0",
+    "underscore": "~1.4.4"
   }
 }

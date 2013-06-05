@@ -20,14 +20,23 @@ module.exports = (grunt) ->
             'components/ace-builds/src-min/worker-javascript.js'
             'components/ace-builds/src-min/mode-markdown.js'
 
+            # Backbone
+            'components/backbone/backbone-min.js'
+
             # CoffeeScript
             'components/coffee-script/extras/coffee-script.js'
+
+            # Elvis
+            'components/elvis/dist/elv.min.js'
+
+            # jQuery
+            'components/jquery/jquery.min.js'
 
             # Markdown
             'components/markdown/lib/markdown.js'
 
-            # Elvis
-            'components/elvis/dist/elv.min.js'
+            # Underscore
+            'components/underscore/underscore-min.js'
           ]
         ]
 

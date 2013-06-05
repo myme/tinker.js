@@ -6,6 +6,7 @@
     "tinker": "./bin/tinker.js"
   },
   "scripts": {
+    "build": "grunt",
     "start": "nodemon -w bin bin/tinker.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
