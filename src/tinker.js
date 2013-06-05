@@ -194,8 +194,8 @@ window.Tinker = (function (el, css, utils) {
   // Mode controller
 
   var ModeController = (function () {
-    var ModeController = function (handlers, editor) {
-      this.handlers = handlers;
+    var ModeController = function (extensions, editor) {
+      this.extensions = extensions;
       this.editor = editor;
     };
 
@@ -204,7 +204,7 @@ window.Tinker = (function (el, css, utils) {
     };
 
     ModeController.prototype.getKeys = function () {
-      return utils.getOwnKeys(this.handlers);
+      return utils.getOwnKeys(this.extensions);
     };
 
     ModeController.prototype.onchange = function (callback) {
@@ -343,7 +343,7 @@ window.Tinker = (function (el, css, utils) {
         keyboardHandler: require('ace/keyboard/vim').handler
       });
 
-      this.modeController = new ModeController(this.handlers, this.editor);
+      this.modeController = new ModeController(this.extensions, this.editor);
 
       this.themeController = new ThemeController(document.head, this.editor)
         .add('default', {
@@ -360,7 +360,7 @@ window.Tinker = (function (el, css, utils) {
         });
     };
 
-    Tinker.prototype.handlers = {};
+    Tinker.prototype.extensions = {};
 
     Tinker.prototype.log = function () {
       this.logController.setLogs.apply(this.logController, arguments);
@@ -380,13 +380,13 @@ window.Tinker = (function (el, css, utils) {
       var settings = new ModalController(this.settingsEl);
       this.settingsBtnEl.onclick = utils.clickHandler(settings.show, settings);
 
-      var handlers = this.handlers;
+      var extensions = this.extensions;
       var editor = this.editor
         .start()
         .onchange(function (e) {
           var mode = editor.getMode();
-          var handler = (mode && handlers[mode]) || handlers['default'];
-          handler.call(this, editor.getValue());
+          var extension = (mode && extensions[mode]) || extensions['default'];
+          extension.call(this, editor.getValue());
         }.bind(this));
 
       this.modeController.set(this.options.mode || 'default');
@@ -454,12 +454,14 @@ window.Tinker = (function (el, css, utils) {
       this.outputView.setOutput(output);
     };
 
-    Tinker.addHandler = function (type, handler) {
-      Tinker.prototype.handlers[type] = handler;
+    Tinker.addExtension = function (name, extension) {
+      Tinker.prototype.extensions[name] = extension;
     };
 
-    Tinker.addHandler('default', function (value) {
-      this.outputView.setOutput(value);
+    Tinker.addExtension('default', {
+      handler: function (value) {
+        this.outputView.setOutput(value);
+      }
     });
 
     return Tinker;

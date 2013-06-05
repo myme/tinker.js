@@ -2,7 +2,7 @@
 
   'use strict';
 
-  Tinker.addHandler('markdown', function (markdown) {
+  Tinker.addExtension('markdown', function (markdown) {
     var compiled;
     try {
       compiled = md.toHTML(markdown);

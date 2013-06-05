@@ -2,7 +2,7 @@
 
   'use strict';
 
-  Tinker.addHandler('javascript', function (javascript) {
+  Tinker.addExtension('javascript', function (javascript) {
     var result = this.runJS(javascript);
     var value = result.value;
 

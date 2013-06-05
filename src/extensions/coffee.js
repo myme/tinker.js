@@ -2,7 +2,7 @@
 
   'use strict';
 
-  Tinker.addHandler('coffee', function (coffee) {
+  Tinker.addExtension('coffee',  function (coffee) {
     var output = [];
     var compiled;
 
@@ -26,7 +26,7 @@
     this.output(el('.coffee', [
       el('h3', 'Result'),
       el('.coffee-exec', value),
-      el('h3', 'Compiled'),
+      el('h4', 'Compiled'),
       el('.coffee-compiled', el('pre', el('code', compiled)))
     ]));
 
