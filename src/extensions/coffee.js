@@ -1,4 +1,4 @@
-(function (el, Tinker) {
+(function (cs, el, Tinker) {
 
   'use strict';
 
@@ -7,7 +7,7 @@
     var compiled;
 
     try {
-      compiled = CoffeeScript.compile(coffee, { bare: true });
+      compiled = cs.compile(coffee, { bare: true });
     } catch (e) {
       compiled = '';
     }
@@ -33,4 +33,4 @@
     this.log(result.logs);
   });
 
-}(window.el, window.Tinker));
+}(window.CoffeeScript, window.el, window.Tinker));
