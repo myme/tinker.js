@@ -35,6 +35,11 @@ module.exports = (grunt) ->
             # Underscore
             'components/underscore/underscore.js'
           ]
+        ,
+          expand: true
+          cwd: 'components/font-awesome/build/assets/font-awesome'
+          dest: 'static'
+          src: [ 'css/**', 'font/**' ]
         ]
 
   grunt.loadNpmTasks('grunt-contrib-copy')

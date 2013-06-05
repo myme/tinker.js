@@ -2,3 +2,5 @@
 /node_modules
 .*.sw*
 /static/lib
+/static/font
+/static/css/font-awesome*
