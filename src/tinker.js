@@ -147,10 +147,8 @@ define([
     Tinker.prototype.extensions[name] = extension;
   };
 
-  Tinker.addExtension('default', {
-    handler: function (value) {
-      this.outputView.setOutput(value);
-    }
+  Tinker.addExtension('default', function (value) {
+    this.outputView.setOutput(value);
   });
 
   return Tinker;
