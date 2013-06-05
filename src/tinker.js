@@ -3,25 +3,25 @@ define([
   'ace/keyboard/vim',
   'tinker/utils',
   'tinker/editor',
-  'tinker/list-select-view',
-  'tinker/log-controller',
+  'tinker/views/list-select',
   'tinker/js-runner',
-  'tinker/modal-controller',
-  'tinker/mode-controller',
-  'tinker/output-view',
-  'tinker/theme-controller'
+  'tinker/controllers/log',
+  'tinker/controllers/modal',
+  'tinker/controllers/mode',
+  'tinker/controllers/theme',
+  'tinker/views/output'
 ], function (
   el,
   VimKeybingings,
   utils,
   Editor,
   ListSelectView,
-  LogController,
   JSRunner,
+  LogController,
   ModalController,
   ModeController,
-  OutputView,
-  ThemeController
+  ThemeController,
+  OutputView
 ) {
 
   var Tinker = function (options) {
@@ -148,7 +148,7 @@ define([
   };
 
   Tinker.addExtension('default', function (value) {
-    this.outputView.setOutput(value);
+    this.setOutput(value);
   });
 
   return Tinker;
