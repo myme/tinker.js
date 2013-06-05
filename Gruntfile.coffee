@@ -10,6 +10,12 @@ module.exports = (grunt) ->
           dest: 'static/lib/ace'
           src: '**'
         ,
+          # Bootstrap
+          expand: true
+          cwd: 'components/bootstrap/docs/assets/css/'
+          dest: 'static/css/'
+          src: 'bootstrap.css'
+        ,
           expand: true
           flatten: true
           dest: 'static/lib/'
@@ -36,6 +42,7 @@ module.exports = (grunt) ->
             'components/underscore/underscore.js'
           ]
         ,
+          # Font awesome
           expand: true
           cwd: 'components/font-awesome/build/assets/font-awesome'
           dest: 'static'
