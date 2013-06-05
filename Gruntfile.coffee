@@ -35,6 +35,9 @@ module.exports = (grunt) ->
             # Markdown
             'components/markdown/lib/markdown.js'
 
+            # Require
+            'components/requirejs/require.js'
+
             # Underscore
             'components/underscore/underscore-min.js'
           ]

@@ -12,6 +12,7 @@
     "coffee-script": "~1.6.2",
     "markdown": "~0.4.0",
     "backbone": "~1.0.0",
-    "underscore": "~1.4.4"
+    "underscore": "~1.4.4",
+    "requirejs": "~2.1.6"
   }
 }
