@@ -37,38 +37,6 @@ app.use('/lib', express.static(path.join(rootDir, 'lib')));
 app.use('/src', express.static(path.join(rootDir, 'src')));
 app.use('/', express.static(path.join(rootDir, 'static')));
 
-var scripts = [
-  '/lib/ace.js',
-  '/lib/keybinding-vim.js',
-  '/lib/coffee-script.js',
-  '/lib/markdown.js',
-  '/lib/elv.min.js',
-  '/src/utils.js',
-  '/src/tinker.js',
-  '/src/tinker_javascript.js',
-  '/src/extensions/coffee.js',
-  '/src/extensions/javascript.js',
-  '/src/extensions/markdown.js'
-];
-
-argv._.forEach(function (filename) {
-  app.get('/sources/' + filename, function (req, res) {
-    fs.readFile(filename, function (err, data) {
-      if (err) {
-        throw err;
-      }
-      res.set({
-        'Content-Type': 'text/javascript'
-      });
-      res.send(200, data);
-    });
-  });
-});
-
-scripts = scripts.concat(argv._.map(function (filename) {
-  return '/sources/' + filename;
-}));
-
 var getConfig = function (file, callback) {
   fs.readFile(file, function (err, data) {
     var json;
@@ -91,7 +59,6 @@ app.get('/', function (req, res) {
     }
     res.render('index', {
       mode: data.mode || argv.mode,
-      scripts: scripts,
       theme: data.theme || argv.theme
     });
   });
