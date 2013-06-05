@@ -16,6 +16,7 @@ window.Tinker = (function (el, css, utils) {
       setTimeout(function () {
         el(frame.contentDocument.head, [
           el('link(rel="stylesheet",href="/css/bootstrap.css")'),
+          el('link(rel="stylesheet",href="/css/font-awesome.min.css")'),
           el('style', css({ 'body': { 'padding': '10px' }}))
         ]);
       }, 0);
