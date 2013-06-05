@@ -1,7 +1,6 @@
 /* jshint evil:true */
 
-window.Tinker = window.Tinker || {};
-window.Tinker.JSRunner = (function () {
+define(function () {
 
   'use strict';
 
@@ -61,4 +60,4 @@ window.Tinker.JSRunner = (function () {
 
   return JSRunner;
 
-}());
+});

@@ -1,4 +1,8 @@
-(function (Tinker, md) {
+define([
+  'elvis',
+  'markdown',
+  'tinker/tinker'
+], function (el, md, Tinker) {
 
   'use strict';
 
@@ -12,4 +16,4 @@
     this.outputView.setOutput(el('.markdown', { html: compiled }));
   });
 
-}(window.Tinker, window.markdown));
+});

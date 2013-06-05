@@ -1,5 +1,4 @@
-window.Tinker = window.Tinker || {};
-window.Tinker.utils = (function () {
+define(function () {
 
   'use strict';
 
@@ -53,4 +52,4 @@ window.Tinker.utils = (function () {
     }
   };
 
-}());
+});

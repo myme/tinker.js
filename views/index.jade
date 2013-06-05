@@ -5,9 +5,4 @@ html(lang="en")
     link(rel="stylesheet",href="/css/bootstrap.css")
     link(rel="stylesheet",href="/css/font-awesome.min.css")
     link(rel="stylesheet",href="/src/styles.less")
-    each script in scripts
-      script(src="#{script}",type="text/javascript",charset="utf-8")
-    script(type="text/javascript",charset="utf-8")
-      window.onload = function () {
-        new Tinker({ mode: "#{mode}", theme: "#{theme}" }).start();
-      };
+    script(data-main="/src/main",src="/lib/require.js")

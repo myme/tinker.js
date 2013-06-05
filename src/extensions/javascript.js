@@ -1,4 +1,7 @@
-(function (el, Tinker) {
+define([
+  'elvis',
+  'tinker/tinker'
+], function (el, Tinker) {
 
   'use strict';
 
@@ -19,4 +22,4 @@
     this.log(result.logs);
   });
 
-}(window.el, window.Tinker));
+});

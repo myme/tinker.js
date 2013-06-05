@@ -1,4 +1,6 @@
-(function (cs, el, Tinker) {
+define([
+  'tinker/tinker'
+], function (Tinker) {
 
   'use strict';
 
@@ -33,4 +35,4 @@
     this.log(result.logs);
   });
 
-}(window.CoffeeScript, window.el, window.Tinker));
+});
