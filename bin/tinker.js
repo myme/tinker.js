@@ -5,6 +5,8 @@ var compiless = require('express-compiless');
 var fs = require('fs');
 var path = require('path');
 
+var configFile = '/Users/mmyrseth/.tinker.json';
+
 var optimist = require('optimist')
   .usage('Usage $0 [files]')
   .default('mode', 'javascript')
@@ -67,11 +69,31 @@ scripts = scripts.concat(argv._.map(function (filename) {
   return '/sources/' + filename;
 }));
 
+var getConfig = function (file, callback) {
+  fs.readFile(file, function (err, data) {
+    var json;
+    if (err) {
+      callback(err);
+    }
+    try {
+      json = JSON.parse(data || '{}');
+    } catch (e) {
+      return callback(e);
+    }
+    callback(null, json);
+  });
+};
+
 app.get('/', function (req, res) {
-  res.render('index', {
-    mode: argv.mode,
-    scripts: scripts,
-    theme: argv.theme
+  getConfig(configFile, function (err, data) {
+    if (err) {
+      throw err;
+    }
+    res.render('index', {
+      mode: data.mode || argv.mode,
+      scripts: scripts,
+      theme: data.theme || argv.theme
+    });
   });
 });
 
