@@ -1,6 +1,7 @@
 define([
+  'elvis',
   'tinker/tinker'
-], function (Tinker) {
+], function (el, Tinker) {
 
   'use strict';
 
