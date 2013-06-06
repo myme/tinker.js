@@ -162,7 +162,7 @@ define([
   };
 
   Tinker.addExtension('default', function (value) {
-    this.setOutput(value);
+    this.output(value);
   });
 
   return Tinker;
