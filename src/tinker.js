@@ -3,24 +3,28 @@ define([
   'ace/keyboard/vim',
   'tinker/utils',
   'tinker/editor',
-  'tinker/views/list-select',
+  'tinker/views/button-list',
+  'tinker/views/list-select-old',
   'tinker/js-runner',
   'tinker/controllers/log',
   'tinker/controllers/modal',
   'tinker/controllers/mode',
   'tinker/controllers/theme',
+  'tinker/models/tinker',
   'tinker/views/output'
 ], function (
   el,
   VimKeybingings,
   utils,
   Editor,
-  ListSelectView,
+  ButtonListView,
+  ListSelectViewOld,
   JSRunner,
   LogController,
   ModalController,
   ModeController,
   ThemeController,
+  TinkerModel,
   OutputView
 ) {
 
@@ -32,21 +36,27 @@ define([
       keyboardHandler: VimKeybingings.handler
     });
 
-    this.modeController = new ModeController(this.extensions, this.editor);
-
-    this.themeController = new ThemeController(document.head, this.editor)
-      .add('default', {
+    this.model = new TinkerModel()
+      .addTheme('default', {
         editor: null,
         css: 'default'
       })
-      .add('idle fingers', {
+      .addTheme('idle fingers', {
         editor: 'ace/theme/idle_fingers',
         css: 'idle-fingers'
       })
-      .add('twilight', {
+      .addTheme('twilight', {
         editor: 'ace/theme/twilight',
         css: 'twilight'
       });
+
+    this.themeController = new ThemeController({
+      editor: this.editor,
+      head: document.head,
+      model: this.model
+    });
+
+    this.modeController = new ModeController(this.extensions, this.editor);
   };
 
   Tinker.prototype.extensions = {};
@@ -79,11 +89,15 @@ define([
       }.bind(this));
 
     this.modeController.set(this.options.mode || 'default');
-    this.themeController.set(this.options.theme || 'default');
+    this.model.setTheme(this.options.theme || 'default');
   };
 
   Tinker.prototype.render = function () {
     this.outputView = new OutputView(el('#output.panel'));
+
+    var themeList = new ButtonListView({
+      collection: this.model.get('themes')
+    }).on('click', this.model.setTheme, this.model);
 
     el(document.body, [
       el('#editor.panel', el('#editor-container')),
@@ -117,10 +131,10 @@ define([
         el('p', 'Close this modal by clicking outside of its bounds.'),
 
         el('h3', 'Editor mode'),
-        new ListSelectView(el('p'), this.modeController).render().element,
+        new ListSelectViewOld(el('p'), this.modeController).render().element,
 
         el('h3', 'Theme settings'),
-        new ListSelectView(el('p'), this.themeController).render().element,
+        themeList.render().el,
 
         el('h3', 'Global settings'),
         el('p', 'This is the stuff in your ~/.tinker file.'),
