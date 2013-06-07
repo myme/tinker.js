@@ -18,6 +18,7 @@ define([
       var css = theme.get('css');
       this.loadStyles('/src/themes/' + css + '.less');
       this.editor.setTheme(theme.get('editor'));
+      return this;
     },
 
     loadStyles: function (src) {
