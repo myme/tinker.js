@@ -107,7 +107,8 @@ define([
 
       el('#buttons', [
         this.helpBtnEl     = el('button#help-button.btn-link', el('i.icon-question-sign.icon-2x')),
-        this.settingsBtnEl = el('button#settings-button.btn-link', el('i.icon-cogs.icon-2x'))
+        this.settingsBtnEl = el('button#settings-button.btn-link', el('i.icon-cogs.icon-2x')),
+        this.modeLabel     = el('span', utils.capitalize(this.modeController.getActive()))
       ]),
 
       this.helpEl = el('#help.tinker-modal.hide', el('.well', [
