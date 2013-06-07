@@ -30,15 +30,39 @@ requirejs.config({
 
   'use strict';
 
-  var extensions = TinkerConfig.extensions.map(function (each) {
-    return 'tinker/extensions/' + each;
-  });
+  var modes = TinkerConfig.modes;
 
-  require([
+  var deps = [
     'jquery',
     'tinker/tinker'
-  ].concat(extensions), function ($, Tinker) {
-    $(function () { new Tinker(TinkerConfig).start(); });
+  ].concat(modes.map(function (each) {
+    return 'tinker/modes/' + each;
+  }));
+
+  require(deps, function ($, Tinker) {
+    var args = Array.prototype.slice.call(arguments);
+    var offset = deps.length - modes.length;
+
+    $(function () {
+      TinkerConfig.el = document.body;
+
+      var tinker = new Tinker(TinkerConfig)
+        .addTheme('idle fingers', {
+          editor: 'ace/theme/idle_fingers',
+          css: 'idle-fingers'
+        })
+        .addTheme('twilight', {
+          editor: 'ace/theme/twilight',
+          css: 'twilight'
+        });
+
+      modes.reduce(function (tinker, mode, idx) {
+        var handler = args[idx + offset];
+        return tinker.addMode(mode, handler);
+      }, tinker);
+
+      tinker.start();
+    });
   });
 
 }());
