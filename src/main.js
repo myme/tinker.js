@@ -30,35 +30,33 @@ requirejs.config({
 
   'use strict';
 
-  var modes = TinkerConfig.modes;
-
   var deps = [
     'jquery',
     'tinker/tinker'
-  ].concat(modes.map(function (each) {
+  ].concat(TinkerConfig.modes.map(function (each) {
     return 'tinker/modes/' + each;
   }));
 
   require(deps, function ($, Tinker) {
     var args = Array.prototype.slice.call(arguments);
-    var offset = deps.length - modes.length;
+    var offset = deps.length - TinkerConfig.modes.length;
 
     $(function () {
-      TinkerConfig.el = document.body;
+      var tinker = new Tinker({
+        el: document.body,
+        mode: TinkerConfig.mode,
+        theme: TinkerConfig.theme
+      });
 
-      var tinker = new Tinker(TinkerConfig)
-        .addTheme('idle fingers', {
-          editor: 'ace/theme/idle_fingers',
-          css: 'idle-fingers'
-        })
-        .addTheme('twilight', {
-          editor: 'ace/theme/twilight',
-          css: 'twilight'
-        });
-
-      modes.reduce(function (tinker, mode, idx) {
+      TinkerConfig.modes.reduce(function (tinker, mode, idx) {
         var handler = args[idx + offset];
         return tinker.addMode(mode, handler);
+      }, tinker);
+
+      TinkerConfig.themes.reduce(function (tinker, theme) {
+        var name = theme.name;
+        delete theme.name;
+        return tinker.addTheme(name, theme);
       }, tinker);
 
       tinker.start();

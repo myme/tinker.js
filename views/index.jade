@@ -13,6 +13,15 @@ html(lang="en")
           'javascript',
           'markdown'
         ],
-        theme: 'twilight'
+        theme: 'twilight',
+        themes: [{
+          name: 'idle fingers',
+          editor: 'ace/theme/idle_fingers',
+          css: 'idle-fingers'
+        }, {
+          name: 'twilight',
+          editor: 'ace/theme/twilight',
+          css: 'twilight'
+        }]
       };
     script(data-main="/src/main",src="/lib/require.js")
