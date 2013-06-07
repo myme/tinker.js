@@ -1,14 +1,19 @@
 define([
-  'backbone',
-  'tinker/models/theme-list'
-], function (Backbone, ThemeList) {
+  'backbone'
+], function (Backbone) {
 
   'use strict';
+
+  var List = Backbone.Collection.extend({
+
+    model: Backbone.Model
+
+  });
 
   return Backbone.Model.extend({
 
     initialize: function () {
-      this.set('themes', new ThemeList());
+      this.set('themes', new List());
     },
 
     addTheme: function (name, theme) {
