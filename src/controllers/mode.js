@@ -4,28 +4,15 @@ define([
   utils
 ) {
 
-  var ModeController = function (extensions, editor) {
-    this.extensions = extensions;
-    this.editor = editor;
+  var ModeController = function (options) {
+    this.editor = options.editor;
+    this.model = options.model;
+    this.model.on('change:mode', this.set, this);
   };
 
-  ModeController.prototype.getActive = function () {
-    return this.editor.getMode();
-  };
-
-  ModeController.prototype.getKeys = function () {
-    return utils.getOwnKeys(this.extensions);
-  };
-
-  ModeController.prototype.onchange = function (callback) {
-    this.changeListener = callback;
-  };
-
-  ModeController.prototype.set = function (mode) {
-    this.editor.setMode(mode);
-    if (this.changeListener instanceof Function) {
-      this.changeListener();
-    }
+  ModeController.prototype.set = function () {
+    var mode = this.model.get('mode');
+    this.editor.setMode(mode.id);
     return this;
   };
 

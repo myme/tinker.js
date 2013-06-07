@@ -5,7 +5,7 @@ define([
 
   'use strict';
 
-  Tinker.addExtension('javascript', function (javascript) {
+  return function (javascript) {
     var result = this.runJS(javascript);
     var value = result.value;
 
@@ -20,6 +20,6 @@ define([
     }
 
     this.log(result.logs);
-  });
+  };
 
 });

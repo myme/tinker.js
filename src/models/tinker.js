@@ -13,7 +13,24 @@ define([
   return Backbone.Model.extend({
 
     initialize: function () {
+      this.set('modes', new List());
       this.set('themes', new List());
+    },
+
+    addMode: function (name, handler) {
+      this.get('modes').add({
+        id: name,
+        handler: handler
+      });
+      return this;
+    },
+
+    setMode: function (mode) {
+      if (typeof mode === 'string') {
+        mode = this.get('modes').get(mode);
+      }
+      this.set('mode', mode);
+      return this;
     },
 
     addTheme: function (name, theme) {

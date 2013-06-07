@@ -5,7 +5,7 @@ define([
 
   'use strict';
 
-  Tinker.addExtension('coffee',  function (coffee) {
+  return function (coffee) {
     var output = [];
     var compiled;
 
@@ -34,6 +34,6 @@ define([
     ]));
 
     this.log(result.logs);
-  });
+  };
 
 });

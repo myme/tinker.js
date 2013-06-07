@@ -6,7 +6,7 @@ define([
 
   'use strict';
 
-  Tinker.addExtension('markdown', function (markdown) {
+  return function (markdown) {
     var compiled;
     try {
       compiled = md.toHTML(markdown);
@@ -14,6 +14,6 @@ define([
       compiled = '';
     }
     this.outputView.setOutput(el('.markdown', { html: compiled }));
-  });
+  };
 
 });

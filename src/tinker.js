@@ -11,7 +11,10 @@ define([
   'tinker/controllers/mode',
   'tinker/controllers/theme',
   'tinker/models/tinker',
-  'tinker/views/output'
+  'tinker/views/output',
+  'tinker/extensions/coffee',
+  'tinker/extensions/javascript',
+  'tinker/extensions/markdown'
 ], function (
   el,
   VimKeybingings,
@@ -25,7 +28,10 @@ define([
   ModeController,
   ThemeController,
   TinkerModel,
-  OutputView
+  OutputView,
+  coffeeHandler,
+  javascriptHandler,
+  markdownHandler
 ) {
 
   var Tinker = function (options) {
@@ -37,6 +43,12 @@ define([
     });
 
     this.model = new TinkerModel()
+      .addMode('default', function (value) {
+        this.output(value);
+      })
+      .addMode('coffee', coffeeHandler)
+      .addMode('javascript', javascriptHandler)
+      .addMode('markdown', markdownHandler)
       .addTheme('default', {
         editor: null,
         css: 'default'
@@ -50,16 +62,17 @@ define([
         css: 'twilight'
       });
 
+    this.modeController = new ModeController({
+      editor: this.editor,
+      model: this.model
+    });
+
     this.themeController = new ThemeController({
       editor: this.editor,
       head: document.head,
       model: this.model
     });
-
-    this.modeController = new ModeController(this.extensions, this.editor);
   };
-
-  Tinker.prototype.extensions = {};
 
   Tinker.prototype.log = function () {
     this.logController.setLogs.apply(this.logController, arguments);
@@ -79,21 +92,24 @@ define([
     var settings = new ModalController(this.settingsEl);
     this.settingsBtnEl.onclick = utils.clickHandler(settings.show, settings);
 
-    var extensions = this.extensions;
     var editor = this.editor
       .start()
       .onchange(function (e) {
-        var mode = editor.getMode();
-        var extension = (mode && extensions[mode]) || extensions['default'];
-        extension.call(this, editor.getValue());
+        var handler = this.model.get('mode').get('handler');
+        handler.call(this, editor.getValue());
       }.bind(this));
 
-    this.modeController.set(this.options.mode || 'default');
+    this.model.setMode(this.options.mode || 'default');
     this.model.setTheme(this.options.theme || 'default');
   };
 
   Tinker.prototype.render = function () {
+    var modeLabel;
     this.outputView = new OutputView(el('#output.panel'));
+
+    var modeList = new ButtonListView({
+      collection: this.model.get('modes')
+    }).on('click', this.model.setMode, this.model);
 
     var themeList = new ButtonListView({
       collection: this.model.get('themes')
@@ -108,7 +124,7 @@ define([
       el('#buttons', [
         this.helpBtnEl     = el('button#help-button.btn-link', el('i.icon-question-sign.icon-2x')),
         this.settingsBtnEl = el('button#settings-button.btn-link', el('i.icon-cogs.icon-2x')),
-        this.modeLabel     = el('span', utils.capitalize(this.modeController.getActive()))
+        modeLabel          = el('span')
       ]),
 
       this.helpEl = el('#help.tinker-modal.hide', el('.well', [
@@ -132,7 +148,7 @@ define([
         el('p', 'Close this modal by clicking outside of its bounds.'),
 
         el('h3', 'Editor mode'),
-        new ListSelectViewOld(el('p'), this.modeController).render().element,
+        modeList.render().el,
 
         el('h3', 'Theme settings'),
         themeList.render().el,
@@ -144,6 +160,13 @@ define([
         el('p', 'This is the stuff in your $PWD/.tinker file.')
       ]))
     ]);
+
+    this.model.on('change:mode', function (model) {
+      var mode = model.get('mode').id;
+      var text = utils.capitalize(mode);
+      el(modeLabel, text);
+    });
+
     return this;
   };
 
@@ -157,14 +180,6 @@ define([
   Tinker.prototype.output = function (output) {
     this.outputView.setOutput(output);
   };
-
-  Tinker.addExtension = function (name, extension) {
-    Tinker.prototype.extensions[name] = extension;
-  };
-
-  Tinker.addExtension('default', function (value) {
-    this.output(value);
-  });
 
   return Tinker;
 
