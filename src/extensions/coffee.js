@@ -1,7 +1,8 @@
 define([
   'elvis',
+  'coffee-script',
   'tinker/tinker'
-], function (el, Tinker) {
+], function (el, cs, Tinker) {
 
   'use strict';
 
