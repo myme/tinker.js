@@ -33,20 +33,12 @@ define([
   return Backbone.View.extend({
 
     initialize: function () {
-      this.model = new TinkerModel();
       this.editor = new Editor({
         selector: 'editor-container',
         keyboardHandler: VimKeybingings.handler
       });
 
-      this
-        .addMode('default', function (value) {
-          this.output(value);
-        })
-        .addTheme('default', {
-          editor: null,
-          css: 'default'
-        });
+      this.model = new TinkerModel();
 
       this.modeController = new ModeController({
         editor: this.editor,
@@ -58,6 +50,15 @@ define([
         head: document.head,
         model: this.model
       });
+
+      this
+        .addMode('default', function (value) {
+          this.output(value);
+        })
+        .addTheme('default', {
+          editor: null,
+          css: 'default'
+        });
     },
 
     addMode: function (name, handler) {
@@ -180,7 +181,7 @@ define([
         ]))
       ]);
 
-      this.model.on('change:mode', function (model) {
+      this.listenTo('change:mode', model, function (model) {
         var mode = model.get('mode').id;
         var text = utils.capitalize(mode);
         el(modeLabel, text);
