@@ -181,7 +181,7 @@ define([
         ]))
       ]);
 
-      this.listenTo('change:mode', model, function (model) {
+      this.listenTo(this.model, 'change:mode', function (model) {
         var mode = model.get('mode').id;
         var text = utils.capitalize(mode);
         el(modeLabel, text);
