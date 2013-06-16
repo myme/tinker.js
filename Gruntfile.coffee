@@ -44,7 +44,7 @@ module.exports = (grunt) ->
         ,
           # Font awesome
           expand: true
-          cwd: 'components/font-awesome/build/assets/font-awesome'
+          cwd: 'components/font-awesome/'
           dest: 'static'
           src: [ 'css/**', 'font/**' ]
         ]

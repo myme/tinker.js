@@ -7,6 +7,7 @@
   },
   "scripts": {
     "build": "grunt",
+    "prepublish": "bower install",
     "start": "nodemon -w bin bin/tinker.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
