@@ -40,13 +40,13 @@ app.use('/', express.static(path.join(rootDir, 'static')));
 var getConfig = function (file, callback) {
   fs.readFile(file, function (err, data) {
     var json;
-    if (err) {
-      callback(err);
+    if (err && err.code !== 'ENOENT') {
+      return callback(err);
     }
     try {
       json = JSON.parse(data || '{}');
     } catch (e) {
-      return callback(e);
+      return callback('Illegal JSON format');
     }
     callback(null, json);
   });
