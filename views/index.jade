@@ -7,13 +7,13 @@ html(lang="en")
     link(rel="stylesheet",href="/src/styles.less")
     script
       var TinkerConfig = {
-        mode: 'markdown',
+        mode: '#{mode}',
         modes: [
           'coffee',
           'javascript',
           'markdown'
         ],
-        theme: 'twilight',
+        theme: '#{theme}',
         themes: [{
           name: 'idle fingers',
           editor: 'ace/theme/idle_fingers',
