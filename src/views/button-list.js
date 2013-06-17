@@ -16,8 +16,18 @@ define([
       'click': function () { this.trigger('click', this.model); }
     },
 
+    initialize: function () {
+      this.listenTo(this.model, 'change:isActive', this.activeChanged);
+    },
+
+    activeChanged: function () {
+      var method = this.model.get('isActive') ? 'add' : 'remove';
+      this.$el[ method + 'Class' ]('active');
+    },
+
     render: function () {
       el(this.el, utils.capitalize(this.model.id));
+      this.activeChanged();
       return this;
     }
 
