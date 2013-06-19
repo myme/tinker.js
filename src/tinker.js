@@ -53,9 +53,7 @@ define([
 
       this
         .addMode('default', function (value) {
-          this.output(
-            el('pre', el('code', value))
-          );
+          this.output(el('pre', el('code', value)));
         })
         .addTheme('default', {
           editor: null,
