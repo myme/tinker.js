@@ -1,9 +1,8 @@
 define([
   'elvis',
   'markdown',
-  'tinker/tinker',
   'tinker/views/frame'
-], function (el, md, Tinker, Frame) {
+], function (el, md, Frame) {
 
   'use strict';
 
