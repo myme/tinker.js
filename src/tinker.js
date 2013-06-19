@@ -175,7 +175,10 @@ define([
     },
 
     output: function (output) {
-      el(this._outputEl, output);
+      if (output !== this._lastOutput) {
+        el(this._outputEl, output);
+      }
+      this._lastOutput = output;
     }
 
   });
