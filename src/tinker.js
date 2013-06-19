@@ -49,7 +49,7 @@ define([
 
       this
         .addMode('default', function (value) {
-          return el('pre', el('code', value));
+          return el('pre', value);
         })
         .addTheme('default', {
           editor: null,
