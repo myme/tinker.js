@@ -26,6 +26,13 @@ define([
     render: function () {
       $(this.el).load(function () {
         this.isLoaded = true;
+        el(this.el, {
+          style: css({
+            width: '100%',
+            height: '100%',
+            border: 'none'
+          })
+        });
         el(this.el.contentDocument.head, [
           el('link(rel="stylesheet",href="/css/bootstrap.css")'),
           el('link(rel="stylesheet",href="/css/font-awesome.min.css")'),
