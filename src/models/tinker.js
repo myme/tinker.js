@@ -13,6 +13,7 @@ define([
   return Backbone.Model.extend({
 
     initialize: function () {
+      this.set('buffer', '');
       this.set('modes', new List());
       this.set('themes', new List());
       this.on('change:mode', this.modeChanged, this);
@@ -22,7 +23,7 @@ define([
     modeChanged: function () {
       var mode = this.get('mode');
       this.get('modes').each(function (m) {
-        m.set('isActive', m === mode);
+        m.set('isActive', m.id === mode);
       });
     },
 

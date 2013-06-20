@@ -1,30 +1,34 @@
 define([
   'elvis',
+  'backbone',
   'markdown',
   'tinker/views/frame'
-], function (el, md, Frame) {
+], function (el, Backbone, md, Frame) {
 
   'use strict';
 
-  var first = true;
-  var frame;
+  var css = el.css;
 
-  return function (markdown) {
-    var compiled;
+  return Frame.extend({
 
-    try {
-      compiled = md.toHTML(markdown);
-    } catch (e) {
-      compiled = '';
+    initialize: function () {
+      this.listenTo(this.model, 'change:buffer', this.bufferChanged);
+    },
+
+    bufferChanged: function () {
+      var markdown = this.model.get('buffer');
+      var compiled;
+
+      try {
+        compiled = md.toHTML(markdown);
+      } catch (e) {
+        compiled = '';
+      }
+
+      var output = el('.markdown', { html: compiled });
+      this.body(output);
     }
 
-    var output = el('.markdown', { html: compiled });
-    if (first) {
-      frame = new Frame().render();
-      first = false;
-    }
-    frame.body(output);
-    return frame.el;
-  };
+  });
 
 });

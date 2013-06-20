@@ -50,19 +50,31 @@ define([
         });
     },
 
-    addMode: function (name, handler) {
+    addMode: function (name, Mode) {
       this.model.get('modes').add({
         id: name,
-        handler: handler
+        View: Mode
       });
       return this;
     },
 
     setMode: function (mode) {
-      mode = this.model.get('modes').get(mode);
-      this.model.set('mode', mode);
-      this.editor.setMode(mode.id);
-      this.trigger('set:mode', mode.id);
+      var ModeView = this.model.get('modes')
+        .get(mode).get('View');
+      var view = this.modeView;
+
+      if (ModeView) {
+        if (view) {
+          view.remove();
+        }
+        view = this.modeView = new ModeView({
+          model: this.model
+        });
+        this.editor.setMode(mode);
+        el(this._outputEl, view.render().el);
+        this.trigger('set:mode', mode);
+      }
+
       return this;
     },
 
@@ -95,8 +107,7 @@ define([
       var editor = this.editor
         .start()
         .onchange(function (e) {
-          var handler = this.model.get('mode').get('handler');
-          this.output(handler(editor.getValue()));
+          this.model.set('buffer', editor.getValue());
         }.bind(this));
 
       this.setMode(this.options.mode || 'default');
@@ -164,13 +175,6 @@ define([
       });
 
       return this;
-    },
-
-    output: function (output) {
-      if (output !== this._lastOutput) {
-        el(this._outputEl, output);
-      }
-      this._lastOutput = output;
     }
 
   });
