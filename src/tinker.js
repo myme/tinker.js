@@ -59,8 +59,11 @@ define([
     },
 
     setMode: function (mode) {
-      var ModeView = this.model.get('modes')
-        .get(mode).get('View');
+      if (typeof mode === 'string') {
+        mode = this.model.get('modes').get(mode);
+      }
+
+      var ModeView = mode.get('View');
       var view = this.modeView;
 
       if (ModeView) {
@@ -70,9 +73,10 @@ define([
         view = this.modeView = new ModeView({
           model: this.model
         });
-        this.editor.setMode(mode);
+
         el(this._outputEl, view.render().el);
-        this.trigger('set:mode', mode);
+        this.editor.setMode(mode.id);
+        this.model.set('mode', mode);
       }
 
       return this;
@@ -169,7 +173,8 @@ define([
         ]))
       ]);
 
-      this.listenTo(this, 'set:mode', function (mode) {
+      this.listenTo(this.model, 'change:mode', function (model) {
+        var mode = model.get('mode').id;
         var text = utils.capitalize(mode);
         el(modeLabel, text);
       });

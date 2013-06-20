@@ -23,7 +23,7 @@ define([
     modeChanged: function () {
       var mode = this.get('mode');
       this.get('modes').each(function (m) {
-        m.set('isActive', m.id === mode);
+        m.set('isActive', m === mode);
       });
     },
 
