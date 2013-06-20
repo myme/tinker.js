@@ -8,7 +8,6 @@ define([
   'tinker/views/list-select-old',
   'tinker/js-runner',
   'tinker/controllers/modal',
-  'tinker/controllers/mode',
   'tinker/controllers/theme',
   'tinker/models/tinker'
 ], function (
@@ -21,7 +20,6 @@ define([
   ListSelectViewOld,
   JSRunner,
   ModalController,
-  ModeController,
   ThemeController,
   TinkerModel
 ) {
@@ -35,11 +33,6 @@ define([
       });
 
       this.model = new TinkerModel();
-
-      this.modeController = new ModeController({
-        editor: this.editor,
-        model: this.model
-      });
 
       this.themeController = new ThemeController({
         editor: this.editor,
@@ -66,10 +59,10 @@ define([
     },
 
     setMode: function (mode) {
-      if (typeof mode === 'string') {
-        mode = this.model.get('modes').get(mode);
-      }
+      mode = this.model.get('modes').get(mode);
       this.model.set('mode', mode);
+      this.editor.setMode(mode.id);
+      this.trigger('set:mode', mode.id);
       return this;
     },
 
@@ -165,8 +158,7 @@ define([
         ]))
       ]);
 
-      this.listenTo(this.model, 'change:mode', function (model) {
-        var mode = model.get('mode').id;
+      this.listenTo(this, 'set:mode', function (mode) {
         var text = utils.capitalize(mode);
         el(modeLabel, text);
       });
