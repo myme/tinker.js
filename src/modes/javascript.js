@@ -8,11 +8,13 @@ define([
   return Frame.extend({
 
     initialize: function () {
+      Frame.prototype.initialize.apply(this, arguments);
       this.listenTo(this.model, 'change:buffer', this.bufferChanged);
+      this.once('load', this.bufferChanged, this);
     },
 
-    bufferChanged: function (model) {
-      var javascript = model.get('buffer');
+    bufferChanged: function () {
+      var javascript = this.model.get('buffer');
       var result = this.runJS(javascript);
       var value = result.value;
 

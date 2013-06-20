@@ -9,7 +9,9 @@ define([
   return Frame.extend({
 
     initialize: function () {
+      Frame.prototype.initialize.apply(this, arguments);
       this.listenTo(this.model, 'change:buffer', this.bufferChanged);
+      this.once('load', this.bufferChanged, this);
     },
 
     bufferChanged: function () {

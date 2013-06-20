@@ -11,6 +11,13 @@ define([
 
     tagName: 'iframe',
 
+    initialize: function () {
+      $(this.el).load(function () {
+        this.isLoaded = true;
+        this.trigger('load');
+      }.bind(this));
+    },
+
     body: function (body) {
       if (!this.isLoaded) {
         this._body = body;
@@ -21,8 +28,7 @@ define([
     },
 
     render: function () {
-      $(this.el).load(function () {
-        this.isLoaded = true;
+      this.once('load', function () {
         el(this.el, {
           style: css({
             width: '100%',
@@ -36,7 +42,7 @@ define([
           el('style', css({ 'body': { 'padding': '10px' }}))
         ]);
         this.body(this._body);
-      }.bind(this));
+      }, this);
       return this;
     },
 
