@@ -1,25 +1,36 @@
 define([
   'elvis',
-  'tinker/tinker'
-], function (el, Tinker) {
+  'tinker/views/frame'
+], function (el, Frame) {
 
   'use strict';
 
-  return function (javascript) {
-    var result = this.runJS(javascript);
-    var value = result.value;
+  return Frame.extend({
 
-    if (value && value.nodeType === 1) {
-      this.output(value);
-    } else {
-      var json;
-      try {
-        json = JSON.stringify(value, 0, 2);
-      } catch (e) {}
-      this.output(el('pre', el('code', json || '')));
+    initialize: function () {
+      Frame.prototype.initialize.apply(this, arguments);
+      this.listenTo(this.model, 'change:buffer', this.bufferChanged);
+      this.once('load', this.bufferChanged, this);
+    },
+
+    bufferChanged: function () {
+      var javascript = this.model.get('buffer');
+      var result = this.runJS(javascript);
+      var value = result.value;
+
+      if (value && value.nodeType === 1) {
+        this.body(value);
+      } else {
+        var json;
+        try {
+          json = JSON.stringify(value, 0, 2);
+        } catch (e) {}
+        this.body(el('pre', el('code', json || '')));
+      }
+
+      // this.log(result.logs);
     }
 
-    this.log(result.logs);
-  };
+  });
 
 });

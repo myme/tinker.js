@@ -7,12 +7,9 @@ define([
   'tinker/views/button-list',
   'tinker/views/list-select-old',
   'tinker/js-runner',
-  'tinker/controllers/log',
   'tinker/controllers/modal',
-  'tinker/controllers/mode',
   'tinker/controllers/theme',
-  'tinker/models/tinker',
-  'tinker/views/output'
+  'tinker/models/tinker'
 ], function (
   el,
   Backbone,
@@ -22,12 +19,9 @@ define([
   ButtonListView,
   ListSelectViewOld,
   JSRunner,
-  LogController,
   ModalController,
-  ModeController,
   ThemeController,
-  TinkerModel,
-  OutputView
+  TinkerModel
 ) {
 
   return Backbone.View.extend({
@@ -40,11 +34,6 @@ define([
 
       this.model = new TinkerModel();
 
-      this.modeController = new ModeController({
-        editor: this.editor,
-        model: this.model
-      });
-
       this.themeController = new ThemeController({
         editor: this.editor,
         head: document.head,
@@ -52,19 +41,26 @@ define([
       });
 
       this
-        .addMode('default', function (value) {
-          this.output(el('pre', el('code', value)));
-        })
+        .addMode('default', Backbone.View.extend({
+          tagName: 'pre',
+          initialize: function () {
+            this.listenTo(this.model, 'change:buffer', this.render);
+          },
+          render: function () {
+            el(this.el, this.model.get('buffer'));
+            return this;
+          }
+        }))
         .addTheme('default', {
           editor: null,
           css: 'default'
         });
     },
 
-    addMode: function (name, handler) {
+    addMode: function (name, Mode) {
       this.model.get('modes').add({
         id: name,
-        handler: handler
+        View: Mode
       });
       return this;
     },
@@ -73,7 +69,23 @@ define([
       if (typeof mode === 'string') {
         mode = this.model.get('modes').get(mode);
       }
-      this.model.set('mode', mode);
+
+      var ModeView = mode.get('View');
+      var view = this.modeView;
+
+      if (ModeView) {
+        if (view) {
+          view.remove();
+        }
+        view = this.modeView = new ModeView({
+          model: this.model
+        });
+
+        el(this._outputEl, view.render().el);
+        this.editor.setMode(mode.id);
+        this.model.set('mode', mode);
+      }
+
       return this;
     },
 
@@ -94,17 +106,8 @@ define([
       return this;
     },
 
-    log: function () {
-      this.logController.setLogs.apply(this.logController, arguments);
-    },
-
     start: function () {
       this.render();
-
-      this.logController = new LogController({
-        summaryEl: this.logSummaryEl,
-        outputEl: this.logOutputEl
-      });
 
       var help = new ModalController(this.helpEl);
       this.helpBtnEl.onclick = utils.clickHandler(help.show, help);
@@ -115,8 +118,7 @@ define([
       var editor = this.editor
         .start()
         .onchange(function (e) {
-          var handler = this.model.get('mode').get('handler');
-          handler.call(this, editor.getValue());
+          this.model.set('buffer', editor.getValue());
         }.bind(this));
 
       this.setMode(this.options.mode || 'default');
@@ -125,7 +127,6 @@ define([
 
     render: function () {
       var modeLabel;
-      this.outputView = new OutputView(el('#output.panel'));
 
       var modeList = new ButtonListView({
         collection: this.model.get('modes')
@@ -137,9 +138,7 @@ define([
 
       el(this.el, [
         el('#editor.panel', el('#editor-container')),
-        this.outputView.render().el,
-        this.logOutputEl  = el('#log-output'),
-        this.logSummaryEl = el('button#log-summary.btn-link'),
+        this._outputEl = el('#output'),
 
         el('#buttons', [
           this.helpBtnEl     = el('button#help-button.btn-link', el('i.icon-question-sign.icon-2x')),
@@ -188,17 +187,6 @@ define([
       });
 
       return this;
-    },
-
-    runJS: function (javascript) {
-      var runner = new JSRunner({
-        'window': this.outputView._frame.contentWindow
-      });
-      return runner.run(javascript);
-    },
-
-    output: function (output) {
-      this.outputView.setOutput(output);
     }
 
   });

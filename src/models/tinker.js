@@ -13,6 +13,7 @@ define([
   return Backbone.Model.extend({
 
     initialize: function () {
+      this.set('buffer', '');
       this.set('modes', new List());
       this.set('themes', new List());
       this.on('change:mode', this.modeChanged, this);
