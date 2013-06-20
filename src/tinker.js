@@ -41,9 +41,16 @@ define([
       });
 
       this
-        .addMode('default', function (value) {
-          return el('pre', value);
-        })
+        .addMode('default', Backbone.View.extend({
+          tagName: 'pre',
+          initialize: function () {
+            this.listenTo(this.model, 'change:buffer', this.render);
+          },
+          render: function () {
+            el(this.el, this.model.get('buffer'));
+            return this;
+          }
+        }))
         .addTheme('default', {
           editor: null,
           css: 'default'
