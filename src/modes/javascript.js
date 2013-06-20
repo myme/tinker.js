@@ -1,8 +1,7 @@
 define([
   'elvis',
-  'tinker/tinker',
   'tinker/views/frame'
-], function (el, Tinker, Frame) {
+], function (el, Frame) {
 
   'use strict';
 
