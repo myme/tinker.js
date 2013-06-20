@@ -7,8 +7,6 @@ define([
 
   'use strict';
 
-  var css = el.css;
-
   return Frame.extend({
 
     initialize: function () {
