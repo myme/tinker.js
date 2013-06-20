@@ -1,12 +1,9 @@
 define([
   'jquery',
   'elvis',
-  'backbone'
-], function (
-  $,
-  el,
-  Backbone
-) {
+  'backbone',
+  'tinker/js-runner'
+], function ($, el, Backbone, JSRunner) {
 
   var css = el.css;
 
@@ -43,7 +40,10 @@ define([
       return this;
     },
 
-    runJS: function () {
+    runJS: function (javascript) {
+      return new JSRunner({
+        window: this.el.contentWindow
+      }).run(javascript);
     }
 
   });
