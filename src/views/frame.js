@@ -53,9 +53,16 @@ define([
       }
     }),
 
-    loadScript: mkasync(function (src) {
+    loadScripts: mkasync(function (src) {
+      if (!(src instanceof Array)) {
+        src = [ src ];
+      }
       var head = this.el.contentDocument.head;
-      head.appendChild(el('script', { src: src }));
+      for (var i = 0, l = src.length; i < l; i++) {
+        head.appendChild(el('script', {
+          src: src[i]
+        }));
+      }
     }),
 
     render: function () {
