@@ -9,13 +9,13 @@ define([
 
   var mkasync = function (callback) {
     return function () {
-      var args = Array.prototype.slice.call(arguments);
       if (!this.isLoaded) {
+        var args = Array.prototype.slice.call(arguments);
         args.unshift(this);
         var fn = callback.bind.apply(callback, args);
         this.once('load', fn);
       } else {
-        callback.apply(this, args);
+        callback.apply(this, arguments);
       }
       return this;
     };
@@ -41,10 +41,16 @@ define([
       head.appendChild(el('style', css));
     }),
 
-    loadStylesheet: mkasync(function (src) {
+    loadStylesheets: mkasync(function (src) {
+      if (!(src instanceof Array)) {
+        src = [ src ];
+      }
       var head = this.el.contentDocument.head;
-      head.appendChild(
-        el('link(rel="stylesheet")', { href: src }));
+      for (var i = 0, l = src.length; i < l; i++) {
+        head.appendChild(el('link(rel="stylesheet")', {
+          href: src[i]
+        }));
+      }
     }),
 
     loadScript: mkasync(function (src) {
@@ -61,8 +67,10 @@ define([
             border: 'none'
           })
         });
-        this.loadStylesheet('/css/bootstrap.css');
-        this.loadStylesheet('/css/font-awesome.min.css');
+        this.loadStylesheets([
+          '/css/bootstrap.css',
+          '/css/font-awesome.min.css'
+        ]);
         this.loadCss(css({ 'body': { 'padding': '10px' }}));
       }, this);
       return this;
