@@ -5,13 +5,18 @@ var compiless = require('express-compiless');
 var fs = require('fs');
 var path = require('path');
 
-var configFile = '/Users/mmyrseth/.tinker.json';
+var configFile = function () {
+  var home = process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
+  return path.join(home, '.tinker.json');
+};
 
 var optimist = require('optimist')
   .usage('Usage $0 [files]')
   .default('port', 3000)
+  .alias('c', 'config')
   .alias('p', 'port')
   .alias('h', 'help')
+  .describe('config', 'Tinker configuration file')
   .describe('mode', 'The inital editor mode')
   .describe('port', 'Run server on designated port')
   .describe('theme', 'The inital editor theme')
@@ -51,7 +56,7 @@ var getConfig = function (file, callback) {
 };
 
 app.get('/', function (req, res) {
-  getConfig(configFile, function (err, data) {
+  getConfig(argv.config || configFile(), function (err, data) {
     if (err) {
       throw err;
     }
