@@ -7,6 +7,20 @@ define([
 
   var css = el.css;
 
+  var mkasync = function (callback) {
+    return function () {
+      var args = Array.prototype.slice.call(arguments);
+      if (!this.isLoaded) {
+        args.unshift(this);
+        var fn = callback.bind.apply(callback, args);
+        this.once('load', fn);
+      } else {
+        callback.apply(this, args);
+      }
+      return this;
+    };
+  };
+
   return Backbone.View.extend({
 
     tagName: 'iframe',
@@ -18,14 +32,25 @@ define([
       }.bind(this));
     },
 
-    body: function (body) {
-      if (!this.isLoaded) {
-        this._body = body;
-      } else {
-        el(this.el.contentDocument.body, body);
-      }
-      return this;
-    },
+    body: mkasync(function (body) {
+      el(this.el.contentDocument.body, body);
+    }),
+
+    loadCss: mkasync(function (css) {
+      var head = this.el.contentDocument.head;
+      head.appendChild(el('style', css));
+    }),
+
+    loadStylesheet: mkasync(function (src) {
+      var head = this.el.contentDocument.head;
+      head.appendChild(
+        el('link(rel="stylesheet")', { href: src }));
+    }),
+
+    loadScript: mkasync(function (src) {
+      var head = this.el.contentDocument.head;
+      head.appendChild(el('script', { src: src }));
+    }),
 
     render: function () {
       this.once('load', function () {
@@ -36,12 +61,9 @@ define([
             border: 'none'
           })
         });
-        el(this.el.contentDocument.head, [
-          el('link(rel="stylesheet",href="/css/bootstrap.css")'),
-          el('link(rel="stylesheet",href="/css/font-awesome.min.css")'),
-          el('style', css({ 'body': { 'padding': '10px' }}))
-        ]);
-        this.body(this._body);
+        this.loadStylesheet('/css/bootstrap.css');
+        this.loadStylesheet('/css/font-awesome.min.css');
+        this.loadCss(css({ 'body': { 'padding': '10px' }}));
       }, this);
       return this;
     },
