@@ -9,9 +9,7 @@ var configFile = '/Users/mmyrseth/.tinker.json';
 
 var optimist = require('optimist')
   .usage('Usage $0 [files]')
-  .default('mode', 'javascript')
   .default('port', 3000)
-  .default('theme', 'default')
   .alias('p', 'port')
   .alias('h', 'help')
   .describe('mode', 'The inital editor mode')
@@ -58,8 +56,8 @@ app.get('/', function (req, res) {
       throw err;
     }
     res.render('index', {
-      mode: data.mode || argv.mode,
-      theme: data.theme || argv.theme
+      mode: argv.mode || data.mode || 'default',
+      theme: argv.theme || data.theme || 'default'
     });
   });
 });
