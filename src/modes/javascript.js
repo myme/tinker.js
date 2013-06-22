@@ -28,7 +28,9 @@ define([
         var json;
         try {
           json = JSON.stringify(value, 0, 2);
-        } catch (e) {}
+        } catch (e) {
+          json = null;
+        }
         this.body(el('pre', el('code', json || '')));
       }
 

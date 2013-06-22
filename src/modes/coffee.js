@@ -36,7 +36,9 @@ define([
       if (!value || value.nodeType !== 1) {
         try {
           value = JSON.stringify(value, 0, 2);
-        } catch (e) {}
+        } catch (e) {
+          value = null;
+        }
         value = el('pre', el('code', value || ''));
       }
 
