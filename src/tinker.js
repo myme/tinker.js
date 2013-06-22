@@ -26,13 +26,13 @@ define([
 
   return Backbone.View.extend({
 
-    initialize: function () {
+    initialize: function (options) {
       this.editor = new Editor({
         selector: 'editor-container',
         keyboardHandler: VimKeybingings.handler
       });
 
-      this.model = new TinkerModel();
+      this.model = new TinkerModel({ id: options.id });
 
       this.themeController = new ThemeController({
         editor: this.editor,

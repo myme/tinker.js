@@ -4,6 +4,7 @@ var express = require('express');
 var compiless = require('express-compiless');
 var fs = require('fs');
 var path = require('path');
+var uuid = require('uuid');
 
 var configFile = function () {
   var home = process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
@@ -56,15 +57,20 @@ var getConfig = function (file, callback) {
 };
 
 app.get('/', function (req, res) {
-  getConfig(argv.config || configFile(), function (err, data) {
+  var id = uuid.v4();
+  var config = argv.config || configFile();
+  getConfig(config, function (err, data) {
     if (err) {
       throw err;
     }
     res.render('index', {
+      id: id,
       mode: argv.mode || data.mode || 'default',
       theme: argv.theme || data.theme || 'default'
     });
   });
+  var dir = path.resolve(process.cwd(), path.dirname(config));
+  app.use('/' + id, express.static(dir));
 });
 
 app.listen(argv.port);

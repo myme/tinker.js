@@ -44,6 +44,7 @@ requirejs.config({
     $(function () {
       var tinker = new Tinker({
         el: document.body,
+        id: TinkerConfig.id,
         mode: TinkerConfig.mode,
         theme: TinkerConfig.theme
       });
