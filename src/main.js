@@ -37,6 +37,10 @@ requirejs.config({
     }
   }
 
+  var getModeOptions = function (mode) {
+    return TinkerConfig.modes[mode] || {};
+  };
+
   var deps = [
     'jquery',
     'tinker/tinker'
@@ -58,7 +62,8 @@ requirejs.config({
 
       modes.reduce(function (tinker, mode, idx) {
         var handler = args[idx + offset];
-        return tinker.addMode(mode, handler);
+        var options = getModeOptions(mode);
+        return tinker.addMode(mode, handler, options);
       }, tinker);
 
       TinkerConfig.themes.reduce(function (tinker, theme) {

@@ -57,10 +57,11 @@ define([
         });
     },
 
-    addMode: function (name, Mode) {
+    addMode: function (name, Mode, options) {
       this.model.get('modes').add({
         id: name,
-        View: Mode
+        View: Mode,
+        options: options
       });
       return this;
     },
@@ -77,9 +78,9 @@ define([
         if (view) {
           view.remove();
         }
-        view = this.modeView = new ModeView({
+        view = this.modeView = new ModeView(_.extend({
           model: this.model
-        });
+        }, mode.get('options')));
 
         el(this._outputEl, view.render().el);
         this.editor.setMode(mode.id);
