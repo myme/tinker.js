@@ -60,12 +60,21 @@ app.get('/', function (req, res) {
   var id = uuid.v4();
   var config = argv.config || configFile();
   getConfig(config, function (err, data) {
+    var modes = {};
     if (err) {
       throw err;
     }
+    [ 'coffee', 'javascript', 'markdown' ].forEach(function (mode) {
+      if (data.modes && data.modes[mode]) {
+        modes[mode] = data.modes[mode];
+      } else {
+        modes[mode] = {};
+      }
+    });
     res.render('index', {
       id: id,
       mode: argv.mode || data.mode || 'default',
+      modes: JSON.stringify(modes || {}),
       theme: argv.theme || data.theme || 'default'
     });
   });
