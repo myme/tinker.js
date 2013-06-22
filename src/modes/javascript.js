@@ -19,8 +19,12 @@ define([
 
     bufferChanged: function () {
       var javascript = this.model.get('buffer');
-      var result = this.runJS(javascript);
-      var value = result.value;
+      var output = this.runJS(javascript);
+      this.updateOutput(output);
+    },
+
+    updateOutput: function (output) {
+      var value = output.value;
 
       if (value && value.nodeType === 1) {
         this.body(value);
@@ -33,8 +37,6 @@ define([
         }
         this.body(el('pre', el('code', json || '')));
       }
-
-      // this.log(result.logs);
     }
 
   });

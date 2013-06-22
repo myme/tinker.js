@@ -20,17 +20,21 @@ define([
 
     bufferChanged: function () {
       var coffee = this.model.get('buffer');
-      var output = [];
-      var compiled;
+      var compiled = this.compileCoffee(coffee);
+      var output = this.runJS(compiled);
+      this.updateOutput(output, compiled);
+    },
 
+    compileCoffee: function (coffee) {
       try {
-        compiled = cs.compile(coffee, { bare: true });
+        return cs.compile(coffee, { bare: true });
       } catch (e) {
-        compiled = '';
+        return '';
       }
+    },
 
-      var result = this.runJS(compiled);
-      var value = result.value;
+    updateOutput: function (output, compiled) {
+      var value = output.value;
       var exec;
 
       if (!value || value.nodeType !== 1) {
@@ -48,8 +52,6 @@ define([
         el('h4', 'Compiled'),
         el('.coffee-compiled', el('pre', el('code', compiled)))
       ]));
-
-      // this.log(result.logs);
     }
 
   });
