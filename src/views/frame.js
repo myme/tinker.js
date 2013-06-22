@@ -7,6 +7,20 @@ define([
 
   var css = el.css;
 
+  var mkasync = function (callback) {
+    return function () {
+      if (!this.isLoaded) {
+        var args = Array.prototype.slice.call(arguments);
+        args.unshift(this);
+        var fn = callback.bind.apply(callback, args);
+        this.once('load', fn);
+      } else {
+        callback.apply(this, arguments);
+      }
+      return this;
+    };
+  };
+
   return Backbone.View.extend({
 
     tagName: 'iframe',
@@ -18,14 +32,38 @@ define([
       }.bind(this));
     },
 
-    body: function (body) {
-      if (!this.isLoaded) {
-        this._body = body;
-      } else {
-        el(this.el.contentDocument.body, body);
+    body: mkasync(function (body) {
+      el(this.el.contentDocument.body, body);
+    }),
+
+    loadCss: mkasync(function (css) {
+      var head = this.el.contentDocument.head;
+      head.appendChild(el('style', css));
+    }),
+
+    loadStylesheets: mkasync(function (src) {
+      if (!(src instanceof Array)) {
+        src = [ src ];
       }
-      return this;
-    },
+      var head = this.el.contentDocument.head;
+      for (var i = 0, l = src.length; i < l; i++) {
+        head.appendChild(el('link(rel="stylesheet")', {
+          href: src[i]
+        }));
+      }
+    }),
+
+    loadScripts: mkasync(function (src) {
+      if (!(src instanceof Array)) {
+        src = [ src ];
+      }
+      var head = this.el.contentDocument.head;
+      for (var i = 0, l = src.length; i < l; i++) {
+        head.appendChild(el('script', {
+          src: src[i]
+        }));
+      }
+    }),
 
     render: function () {
       this.once('load', function () {
@@ -36,12 +74,11 @@ define([
             border: 'none'
           })
         });
-        el(this.el.contentDocument.head, [
-          el('link(rel="stylesheet",href="/css/bootstrap.css")'),
-          el('link(rel="stylesheet",href="/css/font-awesome.min.css")'),
-          el('style', css({ 'body': { 'padding': '10px' }}))
+        this.loadStylesheets([
+          '/css/bootstrap.css',
+          '/css/font-awesome.min.css'
         ]);
-        this.body(this._body);
+        this.loadCss(css({ 'body': { 'padding': '10px' }}));
       }, this);
       return this;
     },

@@ -30,27 +30,40 @@ requirejs.config({
 
   'use strict';
 
+  var modes = [];
+  for (var i in TinkerConfig.modes) {
+    if (TinkerConfig.modes.hasOwnProperty(i)) {
+      modes.push(i);
+    }
+  }
+
+  var getModeOptions = function (mode) {
+    return TinkerConfig.modes[mode] || {};
+  };
+
   var deps = [
     'jquery',
     'tinker/tinker'
-  ].concat(TinkerConfig.modes.map(function (each) {
+  ].concat(modes.map(function (each) {
     return 'tinker/modes/' + each;
   }));
 
   require(deps, function ($, Tinker) {
     var args = Array.prototype.slice.call(arguments);
-    var offset = deps.length - TinkerConfig.modes.length;
+    var offset = deps.length - modes.length;
 
     $(function () {
       var tinker = new Tinker({
         el: document.body,
+        id: TinkerConfig.id,
         mode: TinkerConfig.mode,
         theme: TinkerConfig.theme
       });
 
-      TinkerConfig.modes.reduce(function (tinker, mode, idx) {
+      modes.reduce(function (tinker, mode, idx) {
         var handler = args[idx + offset];
-        return tinker.addMode(mode, handler);
+        var options = getModeOptions(mode);
+        return tinker.addMode(mode, handler, options);
       }, tinker);
 
       TinkerConfig.themes.reduce(function (tinker, theme) {

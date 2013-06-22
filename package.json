@@ -28,6 +28,7 @@
     "express": "~3.2.5",
     "express-compiless": "~0.1.5",
     "jade": "~0.30.0",
-    "optimist": "~0.5.0"
+    "optimist": "~0.5.0",
+    "uuid": "~1.4.1"
   }
 }
