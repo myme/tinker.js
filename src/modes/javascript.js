@@ -29,13 +29,12 @@ define([
       if (value && value.nodeType === 1) {
         this.body(value);
       } else {
-        var json;
         try {
-          json = JSON.stringify(value, 0, 2);
+          value = JSON.stringify(value, 0, 2);
         } catch (e) {
-          json = null;
+          value = null;
         }
-        this.body(el('pre', el('code', json || '')));
+        this.body(el('pre', el('code', value || '')));
       }
     }
 
