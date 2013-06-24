@@ -8,10 +8,11 @@ define([
   return Frame.extend({
 
     initialize: function (options) {
+      var libs = options.libs || [];
       Frame.prototype.initialize.apply(this, arguments);
       this.listenTo(this.model, 'change:buffer', this.bufferChanged);
       this.once('load', this.bufferChanged, this);
-      options.libs.map(function (lib) {
+      libs.map(function (lib) {
         var path = [ '', this.model.id, lib ].join('/');
         this.loadScripts(path);
       }, this);
