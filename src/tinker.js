@@ -142,8 +142,12 @@ define([
         this._outputEl = el('#output'),
 
         el('#buttons', [
-          this.helpBtnEl     = el('button#help-button.btn-link', el('i.icon-question-sign.icon-2x')),
-          this.settingsBtnEl = el('button#settings-button.btn-link', el('i.icon-cogs.icon-2x')),
+          this.helpBtnEl =
+            el('button#help-button.btn-link(title="Help")',
+              el('i.icon-question-sign.icon-2x')),
+          this.settingsBtnEl =
+            el('button#settings-button.btn-link(title="Settings")',
+              el('i.icon-cogs.icon-2x')),
           modeLabel          = el('span')
         ]),
 
