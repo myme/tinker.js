@@ -38,12 +38,13 @@ define(function () {
   JSRunner.prototype.run = function (javascript) {
     var mockConsole = new MockConsole();
     var _console = this.win.console;
-    var evaled;
+    var evaled, error;
 
     this.win.console = mockConsole;
     try {
       evaled = this.evaluate(javascript);
     } catch (e) {
+      error = e;
       if (this.debug) {
         _console.error('EVAL ERROR:', e);
       }
@@ -51,6 +52,7 @@ define(function () {
     this.win.console = _console;
 
     return {
+      error: error,
       value: evaled,
       logs: mockConsole.output
     };

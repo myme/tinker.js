@@ -87,7 +87,7 @@ define([
       var result = new JSRunner({
         window: this.el.contentWindow
       }).run(javascript);
-      callback(null, result.value, result.logs);
+      callback(result.error, result.value, result.logs);
     })
 
   });

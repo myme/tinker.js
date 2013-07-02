@@ -24,6 +24,7 @@ define([
     },
 
     updateOutput: function (err, output, logs) {
+      console.log(err);
       if (output && output.nodeType === 1) {
         this.body(output);
       } else {
