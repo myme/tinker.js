@@ -22,8 +22,10 @@ define([
     bufferChanged: function () {
       var coffee = this.model.get('buffer');
       var compiled = this.compileCoffee(coffee);
-      var output = this.runJS(compiled);
-      this.updateOutput(output, compiled);
+      var ctx = this;
+      this.runJS(compiled, function (err, output, logs) {
+        ctx.updateOutput(output, compiled);
+      });
     },
 
     compileCoffee: function (coffee) {
@@ -35,21 +37,18 @@ define([
     },
 
     updateOutput: function (output, compiled) {
-      var value = output.value;
-      var exec;
-
-      if (!value || value.nodeType !== 1) {
+      if (!output || output.nodeType !== 1) {
         try {
-          value = JSON.stringify(value, 0, 2);
+          output = JSON.stringify(output, 0, 2);
         } catch (e) {
-          value = null;
+          output = null;
         }
-        value = el('pre', el('code', value || ''));
+        output = el('pre', el('code', output || ''));
       }
 
       this.body(el('.coffee', [
         el('h3', 'Result'),
-        el('.coffee-exec', value),
+        el('.coffee-exec', output),
         el('h4', 'Compiled'),
         el('.coffee-compiled', el('pre', el('code', compiled)))
       ]));

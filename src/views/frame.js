@@ -83,11 +83,12 @@ define([
       return this;
     },
 
-    runJS: function (javascript) {
-      return new JSRunner({
+    runJS: mkasync(function (javascript, callback) {
+      var result = new JSRunner({
         window: this.el.contentWindow
       }).run(javascript);
-    }
+      callback(null, result.value, result.logs);
+    })
 
   });
 

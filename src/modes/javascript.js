@@ -20,22 +20,19 @@ define([
 
     bufferChanged: function () {
       var javascript = this.model.get('buffer');
-      var output = this.runJS(javascript);
-      this.updateOutput(output);
+      this.runJS(javascript, this.updateOutput.bind(this));
     },
 
-    updateOutput: function (output) {
-      var value = output.value;
-
-      if (value && value.nodeType === 1) {
-        this.body(value);
+    updateOutput: function (err, output, logs) {
+      if (output && output.nodeType === 1) {
+        this.body(output);
       } else {
         try {
-          value = JSON.stringify(value, 0, 2);
+          output = JSON.stringify(output, 0, 2);
         } catch (e) {
-          value = null;
+          output = null;
         }
-        this.body(el('pre', el('code', value || '')));
+        this.body(el('pre', el('code', output || '')));
       }
     }
 
