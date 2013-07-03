@@ -28,7 +28,6 @@ define(function () {
   var JSRunner = function (options) {
     options = options || {};
     this.win = options.window || window;
-    this.debug = options.debug;
   };
 
   JSRunner.prototype.evaluate = function (javascript) {
@@ -45,9 +44,6 @@ define(function () {
       evaled = this.evaluate(javascript);
     } catch (e) {
       error = e;
-      if (this.debug) {
-        _console.error('EVAL ERROR:', e);
-      }
     }
     this.win.console = _console;
 
