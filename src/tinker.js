@@ -148,7 +148,7 @@ define([
           this.settingsBtnEl =
             el('button#settings-button.btn-link(title="Settings")',
               el('i.icon-cogs.icon-2x')),
-          modeLabel          = el('span')
+          modeLabel = el('span')
         ]),
 
         this.helpEl = el('#help.tinker-modal.hide', el('.well', [
