@@ -27,10 +27,11 @@ define([
   return Backbone.View.extend({
 
     initialize: function (options) {
-      this.editor = new Editor({
-        selector: 'editor-container',
+      var editor = this.editor = new Editor({
         keyboardHandler: VimKeybindings.handler
-      });
+      }).onchange(function (e) {
+        this.model.set('buffer', editor.getValue());
+      }.bind(this));
 
       this.model = new TinkerModel({ id: options.id });
 
@@ -116,12 +117,6 @@ define([
       var settings = new ModalController(this.settingsEl);
       this.settingsBtnEl.onclick = utils.clickHandler(settings.show, settings);
 
-      var editor = this.editor
-        .start()
-        .onchange(function (e) {
-          this.model.set('buffer', editor.getValue());
-        }.bind(this));
-
       this.setMode(this.options.mode || 'default');
       this.setTheme(this.options.theme || 'default');
     },
@@ -138,7 +133,7 @@ define([
       }).on('click', this.setTheme, this);
 
       el(this.el, [
-        el('#editor.panel', el('#editor-container')),
+        el('#editor.panel', this.editor.render().el),
         this._outputEl = el('#output'),
 
         el('#buttons', [
