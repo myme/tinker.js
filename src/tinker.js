@@ -13,7 +13,7 @@ define([
 ], function (
   el,
   Backbone,
-  VimKeybingings,
+  VimKeybindings,
   utils,
   Editor,
   ButtonListView,
@@ -29,7 +29,7 @@ define([
     initialize: function (options) {
       this.editor = new Editor({
         selector: 'editor-container',
-        keyboardHandler: VimKeybingings.handler
+        keyboardHandler: VimKeybindings.handler
       });
 
       this.model = new TinkerModel({ id: options.id });
