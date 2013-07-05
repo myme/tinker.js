@@ -46,11 +46,6 @@ define([
       this.editor.setTheme(theme);
     },
 
-    onchange: function (callback) {
-      this.on('change', callback);
-      return this;
-    },
-
     render: function () {
       var ctx = this;
       var options = this.options;

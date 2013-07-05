@@ -29,9 +29,9 @@ define([
     initialize: function (options) {
       var editor = this.editor = new Editor({
         keyboardHandler: VimKeybindings.handler
-      }).onchange(function (e) {
+      }).on('change', function (e) {
         this.model.set('buffer', editor.getValue());
-      }.bind(this));
+      }, this);
 
       this.model = new TinkerModel({ id: options.id });
 
