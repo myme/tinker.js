@@ -1,13 +1,12 @@
 define([
+  'elvis',
   'ace/ace',
   'backbone'
-], function (Ace, Backbone) {
+], function (el, Ace, Backbone) {
 
   'use strict';
 
   return Backbone.View.extend({
-
-    id: 'editor-container',
 
     initialize: function () {
       this._mode = 'default';
@@ -47,9 +46,15 @@ define([
     },
 
     render: function () {
+      var container;
+
+      el(this.el, [
+        container = el('.editor-container')
+      ]);
+
       var ctx = this;
       var options = this.options;
-      var editor = this.editor = Ace.edit(this.el);
+      var editor = this.editor = Ace.edit(container);
       this.hasStarted = true;
 
       editor.getSession().on('change', function () {

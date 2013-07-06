@@ -133,7 +133,7 @@ define([
       }).on('click', this.setTheme, this);
 
       el(this.el, [
-        el('#editor.panel', this.editor.render().el),
+        this.editor.setElement(el('#editor.panel')).render().el,
         this._outputEl = el('#output'),
 
         el('#buttons', [
