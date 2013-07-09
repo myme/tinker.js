@@ -6,6 +6,56 @@ define([
 
   'use strict';
 
+  var Tab = Backbone.View.extend({
+
+    tagName: 'li',
+
+    events: {
+      'click a': function (e) {
+        e.preventDefault();
+        this.trigger('click', this);
+      }
+    },
+
+    render: function () {
+      var name = this.model.get('name');
+      el(this.el, el('a(href="#")', name));
+      return this;
+    }
+
+  });
+
+  var TabBar = Backbone.View.extend({
+
+    tagName: 'ul',
+
+    className: 'nav nav-tabs',
+
+    initialize: function () {
+      var events = 'change:activeBuffer change:buffers';
+      this.listenTo(this.model, events, this.render);
+    },
+
+    render: function () {
+      console.log('render');
+      var active = this.model.get('activeBuffer');
+      var buffers = this.model.get('buffers');
+      el(this.el, buffers.map(function (each) {
+        var view = new Tab({
+          className: active === each ? 'active' : '',
+          model: each
+        }).on('click', this.tabClicked, this);
+        return view.render().el;
+      }, this));
+      return this;
+    },
+
+    tabClicked: function (tab) {
+      this.model.set({ activeBuffer: tab.model });
+    }
+
+  });
+
   return Backbone.View.extend({
 
     initialize: function () {
@@ -49,6 +99,7 @@ define([
       var container;
 
       el(this.el, [
+        new TabBar({ model: this.model }).render().el,
         container = el('.editor-container')
       ]);
 

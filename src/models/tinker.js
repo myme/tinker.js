@@ -13,9 +13,18 @@ define([
   return Backbone.Model.extend({
 
     initialize: function () {
-      this.set('buffer', '');
-      this.set('modes', new List());
-      this.set('themes', new List());
+      var buffers = new List([
+        { name: 'foo.js' },
+        { name: 'bar.html' },
+        { name: 'baz.md' }
+      ]);
+      this.set({
+        buffer: '',
+        activeBuffer: buffers.at(1),
+        buffers: buffers,
+        modes: new List(),
+        themes: new List()
+      });
       this.on('change:mode', this.modeChanged, this);
       this.on('change:theme', this.themeChanged, this);
     },
